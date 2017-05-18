@@ -33,7 +33,7 @@
     <include layout="@layout/content_main_activity_otp" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/goScanner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -41,6 +41,7 @@
         app:backgroundTint="@color/colorLightBlue"
         app:srcCompat="@android:drawable/ic_input_add"
         android:tint="@color/white"
-        android:onClick="addNewWebSite"/>
+
+        />
 
 </android.support.design.widget.CoordinatorLayout>
