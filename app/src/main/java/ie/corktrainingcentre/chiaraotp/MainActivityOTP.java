@@ -1,5 +1,7 @@
 package ie.corktrainingcentre.chiaraotp;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,18 +11,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.vision.barcode.Barcode;
+import ie.corktrainingcentre.chiaraotp.data.DBHelper;
+import ie.corktrainingcentre.chiaraotp.data.DbManager;
+
+import static android.R.attr.data;
 
 public class MainActivityOTP extends AppCompatActivity {
-
-    //private TextView barcodeResult;
-
-    //private static final int RC_BARCODE_CAPTURE = 9001;
-    //private static final String TAG = "BarcodeMain";
 
     public FloatingActionButton goScanner;
 
@@ -30,11 +28,10 @@ public class MainActivityOTP extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Intent app = new Intent(MainActivityOTP.this,ScannerActivity.class);
-                startActivity(app);
+                startActivityForResult(app, 1);
             }
 
         });
-
 
     }
 
@@ -46,41 +43,42 @@ public class MainActivityOTP extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        DbManager db = new DbManager(this);
+        toast(Integer.toString(db.InserisciQualcosa()));
+
         goScanner = (FloatingActionButton) findViewById(R.id.goScanner);
         goScanner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
-        init(); //prima era sotto setContentView
-        //barcodeResult=(TextView)findViewById(R.id.barcode_result);
-    }
-
-    /*public void scanBarcode(View v){
-        Intent intent = new Intent(this, ScannerActivity.class);
-        startActivityForResult(intent,0);
+        init();
     }
 
     @Override
-    protected void onActivityResult (int requestCode, int resultCode, Intent data){
-
-        if(requestCode==0){
-            if (resultCode == CommonStatusCodes.SUCCESS){
-                if(data!=null){
-                    Barcode barcode = data.getParcelableExtra("barcode");
-                    barcodeResult.setText("Barcode value : " + barcode.displayValue);
-                }else{
-                    barcodeResult.setText("No barcode found");
-                }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        toast("callback");
+        // Check which request we're responding to
+        if (requestCode == 1) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                Bundle res = data.getExtras();
+                String result = res.getString("code");
+                toast(result);
             }
-        }else{
-            super.onActivityResult(requestCode,resultCode,data);
         }
+    }
 
-    }*/
+    private void toast(String msg){
+        Context context = getApplicationContext();
+        CharSequence text = msg;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
 
     //----------------------------------------------------------------------------------------------
 

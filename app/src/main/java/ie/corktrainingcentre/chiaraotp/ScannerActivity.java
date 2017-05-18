@@ -1,7 +1,10 @@
 package ie.corktrainingcentre.chiaraotp;
 
-        import android.Manifest;
-        import android.content.Intent;
+import android.Manifest;
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Context;
+import android.content.Intent;
         import android.content.pm.PackageManager;
         import android.support.v4.app.ActivityCompat;
         import android.support.v7.app.AppCompatActivity;
@@ -17,17 +20,17 @@ package ie.corktrainingcentre.chiaraotp;
         import android.view.SurfaceHolder;
         import android.view.SurfaceView;
         import android.widget.TextView;
+import android.widget.Toast;
 
-        import java.io.IOException;
-
-
+import java.io.IOException;
 
 public class ScannerActivity extends AppCompatActivity {
-
     private SurfaceView cameraPreview;
     private CameraSource cameraSource;
     private BarcodeDetector barcodeDetector;
     private TextView barcodeResult;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,33 +40,23 @@ public class ScannerActivity extends AppCompatActivity {
         cameraPreview = (SurfaceView) findViewById(R.id.camera_preview);
         barcodeResult=(TextView)findViewById(R.id.barcode_result);
         createCameraSource();
-
-
     }
 
     private void createCameraSource() {
 
-        barcodeDetector = new BarcodeDetector.Builder(this)
-                .setBarcodeFormats(Barcode.QR_CODE)
-                .build();
+        barcodeDetector = new BarcodeDetector.Builder(this).setBarcodeFormats(Barcode.QR_CODE).build();
 
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
-                .setAutoFocusEnabled(true)
-                .setRequestedPreviewSize(368, 240)
-                .build();
+                                       .setAutoFocusEnabled(true)
+                                       .setRequestedPreviewSize(300, 300)
+                                       .build();
 
         cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                if (ActivityCompat.checkSelfPermission(ScannerActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
+                if (ActivityCompat.checkSelfPermission(ScannerActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                {
                     return;
                 }
                 try {
@@ -94,30 +87,36 @@ public class ScannerActivity extends AppCompatActivity {
 
             @Override
             public void receiveDetections (Detector.Detections<Barcode>detections){
+
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 
-                /*if(barcodes.size()> 0){
-                    Intent intent = new Intent();
-                    intent.putExtra("barcode",barcodes.valueAt(0));
-                    setResult(CommonStatusCodes.SUCCESS,intent);
-                    finish();*/
+                if(barcodes.size()!= 0)
+                {
+                    String res = barcodes.valueAt(0).displayValue;
 
-                if(barcodes.size()!= 0){
+                    Bundle data = new Bundle();
+                    data.putString("code",res);
 
-                    barcodeResult.post(new Runnable() {    // Use the post method of the TextView
-                        public void run() {
-                            barcodeResult.setText(    // Update the TextView
-                                    barcodes.valueAt(0).displayValue
-                            );
-                        }
-                    });
+                    Intent inte = new Intent();
+                    inte.putExtras(data);
 
+                    setResult(Activity.RESULT_OK, inte);
+                    finish();
                 }
             }
         });
     }
 
-    //prima non c'era
+    public void toast(String msg){
+        Context context = getApplicationContext();
+        CharSequence text = msg;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+
     @Override
     protected void onDestroy(){
         super.onDestroy();
