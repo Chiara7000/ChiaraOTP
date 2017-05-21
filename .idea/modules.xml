@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ChiaraOTP.iml" filepath="$PROJECT_DIR$/ChiaraOTP.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chiaraotp.iml" filepath="$PROJECT_DIR$/chiaraotp.iml" />
     </modules>
   </component>
 </project>
