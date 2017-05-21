@@ -43,8 +43,13 @@ public class MainActivityOTP extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DbManager db = new DbManager(this);
-        toast(Integer.toString(db.InserisciQualcosa()));
+        try {
+            AesEncryption.Test();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //DbManager db = new DbManager(this);
+        //toast(db.InserisciQualcosa());
 
         goScanner = (FloatingActionButton) findViewById(R.id.goScanner);
         goScanner.setOnClickListener(new View.OnClickListener() {
