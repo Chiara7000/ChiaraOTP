@@ -44,7 +44,14 @@ public class MainActivityOTP extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         try {
-            AesEncryption.Test();
+            //AesEncryption.Test();
+            //KeyStoreManager k = new KeyStoreManager(this);
+            //k.test("staminchia");
+
+            RSAManager r= new RSAManager(this);
+            byte[] enc=r.Encrypt("staminchia");
+            String s= r.Decrypt(enc);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

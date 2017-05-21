@@ -60,7 +60,4 @@ public class AesEncryption {
 // decrypt
         String exit = decrypt(password,encryptedData);
     }
-
-
-
 }
