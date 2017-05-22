@@ -3,6 +3,7 @@ package ie.corktrainingcentre.chiaraotp;
 import android.content.Context;
 import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyProperties;
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.ByteArrayInputStream;
@@ -14,6 +15,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -21,27 +23,91 @@ import javax.crypto.CipherOutputStream;
 import javax.security.auth.x500.X500Principal;
 
 /**
- * Created by Ciro on 21/05/2017.
+ * Created by Chiara on 21/05/2017.
  */
 
 public class RSAManager {
     private KeyStore keyStore;
     private Context c;
+    private static RSAManager instance=null;
+    private static Object locker=new Object();
+    private RSAManager(){}
 
-    public RSAManager(Context c) {
+    public static RSAManager GetInstance(Context c) {
         try {
-            this.c=c;
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
-            keyStore .load(null, null);
-            CreateNewKey();
+            if(instance==null)
+                synchronized (locker) {
+                    if (instance == null) {
+                        RSAManager i= new RSAManager();
+                        i.c = c;
+                        i.keyStore = KeyStore.getInstance("AndroidKeyStore");
+                        i.keyStore.load(null, null);
+                        i.CreateNewKey();
+                        instance = i;
+                    }
+                }
         }
         catch(Exception e)
         {
 
         }
+        return instance;
     }
 
-    public void CreateNewKey(){
+    public String Encrypt(String secret){
+        String ret=null;
+        try {
+            // Encrypt the text
+            Cipher inputCipher = Cipher.getInstance(Constants.RSA_MODE, "AndroidOpenSSL");
+            inputCipher.init(Cipher.ENCRYPT_MODE, GetPublicKey());
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, inputCipher);
+            cipherOutputStream.write(secret.getBytes());
+            cipherOutputStream.close();
+
+            ret = new String(Base64.encode(outputStream.toByteArray(), Base64.DEFAULT));
+        }
+        catch(Exception e)
+        {
+
+        }
+        return ret;
+    }
+
+    public String Decrypt(String encr) {
+
+        String ret = null;
+        try {
+            byte[] encrypted = Base64.decode(encr.getBytes(), Base64.DEFAULT);
+
+            Cipher output = Cipher.getInstance(Constants.RSA_MODE);
+
+            output.init(Cipher.DECRYPT_MODE, GetPrivateKey());
+
+            CipherInputStream cipherInputStream = new CipherInputStream(new ByteArrayInputStream(encrypted), output);
+            ArrayList<Byte> values = new ArrayList<>();
+            int nextByte;
+            while ((nextByte = cipherInputStream.read()) != -1) {
+                values.add((byte) nextByte);
+            }
+
+            byte[] bytes = new byte[values.size()];
+            for (int i = 0; i < bytes.length; i++) {
+                bytes[i] = values.get(i).byteValue();
+            }
+            ret = new String(bytes, "UTF-8");
+        }
+        catch(Exception e)
+        {
+
+        }
+        return ret;
+    }
+
+    //private methods
+
+    private void CreateNewKey(){
         try {
 
             if (!keyStore.containsAlias(Constants.APPKEY)) {
@@ -96,38 +162,4 @@ public class RSAManager {
         }
         return k;
     }
-
-    public byte[] Encrypt(String secret) throws Exception{
-
-        // Encrypt the text
-        Cipher inputCipher = Cipher.getInstance(Constants.RSA_MODE, "AndroidOpenSSL");
-        inputCipher.init(Cipher.ENCRYPT_MODE, GetPublicKey());
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, inputCipher);
-        cipherOutputStream.write(secret.getBytes());
-        cipherOutputStream.close();
-
-        return outputStream.toByteArray();
-    }
-
-    public  String  Decrypt(byte[] encrypted) throws Exception {
-        Cipher output = Cipher.getInstance(Constants.RSA_MODE);
-
-        output.init(Cipher.DECRYPT_MODE, GetPrivateKey());
-
-        CipherInputStream cipherInputStream = new CipherInputStream(new ByteArrayInputStream(encrypted), output);
-        ArrayList<Byte> values = new ArrayList<>();
-        int nextByte;
-        while ((nextByte = cipherInputStream.read()) != -1) {
-            values.add((byte)nextByte);
-        }
-
-        byte[] bytes = new byte[values.size()];
-        for(int i = 0; i < bytes.length; i++) {
-            bytes[i] = values.get(i).byteValue();
-        }
-        return new String(bytes,"UTF-8");
-    }
-
 }

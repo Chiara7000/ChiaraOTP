@@ -79,7 +79,6 @@ public class KeyStoreManager {
         }
         catch(Exception e){
             Log.e("",e.getMessage());
-
         }
         return "";
     }

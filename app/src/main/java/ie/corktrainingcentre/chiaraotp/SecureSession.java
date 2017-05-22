@@ -39,7 +39,7 @@ public class SecureSession {
 
         if(keys.containsKey(key))
             try {
-                return AesEncryption.decrypt(localPassword, keys.get(key));
+            //    return AesEncryption.Decrypt(localPassword, keys.get(key));
             }
             catch(Exception ex)
             {}
@@ -52,7 +52,7 @@ public class SecureSession {
         byte[] val = new byte[0];
 
         try {
-            val = AesEncryption.encrypt(localPassword,value);
+           // val = AesEncryption.Encrypt(localPassword,value);
         }
         catch(Exception ex)
         {

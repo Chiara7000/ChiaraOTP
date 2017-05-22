@@ -13,8 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import ie.corktrainingcentre.chiaraotp.data.DBHelper;
 import ie.corktrainingcentre.chiaraotp.data.DbManager;
+import ie.corktrainingcentre.chiaraotp.data.OTBContract;
 
 import static android.R.attr.data;
 
@@ -43,21 +46,6 @@ public class MainActivityOTP extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        try {
-            //AesEncryption.Test();
-            //KeyStoreManager k = new KeyStoreManager(this);
-            //k.test("staminchia");
-
-            RSAManager r= new RSAManager(this);
-            byte[] enc=r.Encrypt("staminchia");
-            String s= r.Decrypt(enc);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //DbManager db = new DbManager(this);
-        //toast(db.InserisciQualcosa());
-
         goScanner = (FloatingActionButton) findViewById(R.id.goScanner);
         goScanner.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,19 +54,31 @@ public class MainActivityOTP extends AppCompatActivity {
             }
         });
 
+        RSAManager.GetInstance(this); //initialize
+        DBHelper.getInstance(this);
+
         init();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        toast("callback");
+
         // Check which request we're responding to
         if (requestCode == 1) {
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK) {
                 Bundle res = data.getExtras();
                 String result = res.getString("code");
-                toast(result);
+
+                OTBContract model = OTBContract.GetOTBContract(result);
+
+                toast(model.toString());
+
+                //encrypt
+
+                //save in the database
+
+                //start generating TOTP
             }
         }
     }

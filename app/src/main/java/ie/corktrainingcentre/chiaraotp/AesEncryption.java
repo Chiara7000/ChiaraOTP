@@ -1,8 +1,12 @@
 package ie.corktrainingcentre.chiaraotp;
 
 import android.graphics.Bitmap;
+import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -15,30 +19,55 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * Created by Chiara on 20/05/2017.
  */
 
 public class AesEncryption {
 
-    public static byte[] encrypt(String password, String clearText) throws Exception {
-        byte[] clear = clearText.getBytes();
-        byte[] raw = GetKey(password);
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-        Cipher cipher = Cipher.getInstance(Constants.CIPHER_ALG);
+    public static void Init()
+    {
 
-        cipher.init(Cipher.ENCRYPT_MODE, skeySpec,new IvParameterSpec(GetAESArray(Constants.CIPHER_ALG)));
-        byte[] encrypted = cipher.doFinal(clear);
-        return encrypted;
     }
 
-    public static String decrypt(String password, byte[] encrypted) throws Exception {
-        byte[] raw = GetKey(password);
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-        Cipher cipher = Cipher.getInstance(Constants.CIPHER_ALG);
-        cipher.init(Cipher.DECRYPT_MODE, skeySpec,new IvParameterSpec(GetAESArray(Constants.CIPHER_ALG)));
-        byte[] decrypted = cipher.doFinal(encrypted);
-        return new String(decrypted,"UTF-8");
+
+    public static String Encrypt(String password, String clearText){
+        String ret = null;
+        try {
+            byte[] clear = clearText.getBytes();
+            byte[] raw = GetKey(password);
+            SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+            Cipher cipher = Cipher.getInstance(Constants.CIPHER_ALG);
+
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(GetAESArray(Constants.CIPHER_ALG)));
+            byte[] encrypted = cipher.doFinal(clear);
+            ret = new String(Base64.encode(encrypted,Base64.DEFAULT));
+        }
+        catch(Exception ex)
+        {
+
+        }
+        return ret;
+    }
+
+    public static String Decrypt(String password, String encryptedText){
+        String ret = null;
+        try {
+            byte[] encrypted = Base64.decode(encryptedText.getBytes(),Base64.DEFAULT);
+            byte[] raw = GetKey(password);
+            SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+            Cipher cipher = Cipher.getInstance(Constants.CIPHER_ALG);
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(GetAESArray(Constants.CIPHER_ALG)));
+            byte[] decrypted = cipher.doFinal(encrypted);
+            ret = new String(decrypted);
+        }
+        catch(Exception ex)
+        {
+            Log.e("",ex.getMessage());
+        }
+        return ret;
     }
 
     private static byte[] GetAESArray(String cipherArrayPassword) throws Exception{
@@ -56,8 +85,8 @@ public class AesEncryption {
     public static void Test() throws Exception{
         String password = UUID.randomUUID().toString();
 // encrypt
-        byte[] encryptedData = encrypt(password,"something");
+        String encryptedData = Encrypt(password,"something");
 // decrypt
-        String exit = decrypt(password,encryptedData);
+        String exit = Decrypt(password,encryptedData);
     }
 }

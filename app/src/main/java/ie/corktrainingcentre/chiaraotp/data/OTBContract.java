@@ -2,6 +2,8 @@ package ie.corktrainingcentre.chiaraotp.data;
 
 import android.provider.BaseColumns;
 
+import org.json.JSONObject;
+
 
 public final class OTBContract implements BaseColumns{
 
@@ -11,6 +13,7 @@ public final class OTBContract implements BaseColumns{
     private int digits;
     private int id;
     private String apiUrl;
+
 
     public OTBContract(String secret,String appname,int interval,int digits,String apiUrl)
     {
@@ -24,6 +27,29 @@ public final class OTBContract implements BaseColumns{
     public OTBContract(int id)
     {
         this.id =id;
+    }
+
+    private OTBContract()
+    {}
+
+    public static OTBContract GetOTBContract(String json){
+        try {
+            JSONObject mainObject = new JSONObject(json);
+
+            OTBContract c = new OTBContract();
+            c.secret = mainObject.getString("Secret");
+            c.appname = mainObject.getString("AppName");
+            c.interval = mainObject.getInt("Interval");
+            c.digits = mainObject.getInt("Digits");
+            c.apiUrl = mainObject.getString("ApiUrl");
+            //c.type = mainObject.getString("Type");
+            return c;
+
+        }catch(Exception e)
+        {
+
+        }
+        return null;
     }
 
     public int getId(){
@@ -66,5 +92,9 @@ public final class OTBContract implements BaseColumns{
     }
     public void setApiUrl(String value){
         apiUrl=value;
+    }
+
+    public String ToString(){
+        return "Secret:"+this.getSecret();
     }
 }

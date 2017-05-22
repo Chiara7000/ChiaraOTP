@@ -8,10 +8,15 @@ import android.database.sqlite.SQLiteException;
 import java.text.SimpleDateFormat;
 import android.icu.util.TimeZone;
 import android.provider.ContactsContract;
-
+import android.provider.SyncStateContract;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
+import ie.corktrainingcentre.chiaraotp.Constants;
+import ie.corktrainingcentre.chiaraotp.RSAManager;
 
 public class DbManager {
 
@@ -22,17 +27,6 @@ public class DbManager {
     public DbManager (Context ctx)
     {
         dbHelper = DBHelper.getInstance(ctx);
-    }
-
-    public String InserisciQualcosa()
-    {
-        this.Save(new OTBContract("123","test",0,0,""));
-        int id = GetAppId("test");
-        if(id>-1) {
-            //Delete(new OTBContract(id));
-            return "deleted";
-        }
-        return "not found";
     }
 
     public void Delete(OTBContract model)
@@ -53,7 +47,6 @@ public class DbManager {
         pars2.add(Integer.toString(model.getInterval()));
         pars2.add(Integer.toString(model.getDigits()));
         pars2.add(model.getApiUrl());
-        String[] pars;
 
         String query;
         if(id == -1)
@@ -113,4 +106,5 @@ public class DbManager {
 
         return -1;
     }
+
 }
