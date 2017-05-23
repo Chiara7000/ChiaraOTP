@@ -1,12 +1,17 @@
 package ie.corktrainingcentre.chiaraotp.data;
 
 import android.provider.BaseColumns;
+import android.util.Log;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import ie.corktrainingcentre.chiaraotp.MainActivityOTP;
 
 
 public final class OTBContract implements BaseColumns{
 
+    private static final String TAG = MainActivityOTP.class.getName();
     private String secret;
     private String appname;
     private int interval;
@@ -45,9 +50,11 @@ public final class OTBContract implements BaseColumns{
             //c.type = mainObject.getString("Type");
             return c;
 
-        }catch(Exception e)
+        }
+        catch(JSONException e)
         {
-
+            Log.e(TAG, "unexpected JSON exception", e);
+            // Do something to recover ... or kill the app.
         }
         return null;
     }

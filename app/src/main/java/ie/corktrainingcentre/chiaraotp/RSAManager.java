@@ -17,9 +17,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
+import javax.crypto.IllegalBlockSizeException;
 import javax.security.auth.x500.X500Principal;
 
 /**
@@ -27,6 +29,8 @@ import javax.security.auth.x500.X500Principal;
  */
 
 public class RSAManager {
+
+    private static final String TAG = MainActivityOTP.class.getName();
     private KeyStore keyStore;
     private Context c;
     private static RSAManager instance=null;
@@ -49,7 +53,7 @@ public class RSAManager {
         }
         catch(Exception e)
         {
-
+            Log.e(TAG, "Failed to get an istance of KeyStore", e);
         }
         return instance;
     }
@@ -68,9 +72,8 @@ public class RSAManager {
 
             ret = new String(Base64.encode(outputStream.toByteArray(), Base64.DEFAULT));
         }
-        catch(Exception e)
-        {
-
+        catch(Exception exception) {
+            throw new RuntimeException("Failed to encrypt secret", exception);
         }
         return ret;
     }
@@ -98,9 +101,8 @@ public class RSAManager {
             }
             ret = new String(bytes, "UTF-8");
         }
-        catch(Exception e)
-        {
-
+        catch(Exception exception) {
+            throw new RuntimeException("Failed to decrypt secret", exception);
         }
         return ret;
     }
@@ -129,7 +131,7 @@ public class RSAManager {
         }
         catch(Exception e)
         {
-            Log.e("",e.getMessage());
+            Log.e(TAG, "Failed to generate key pair", e);
         }
     }
 
@@ -143,7 +145,7 @@ public class RSAManager {
             }
         }
         catch(Exception e){
-            Log.e("",e.getMessage());
+            Log.e(TAG, "Failed to get private key", e);
         }
         return k;
     }
@@ -158,7 +160,7 @@ public class RSAManager {
             }
         }
         catch(Exception e){
-            Log.e("",e.getMessage());
+            Log.e(TAG, "Failed to get public key", e);
         }
         return k;
     }

@@ -1,5 +1,7 @@
 package ie.corktrainingcentre.chiaraotp;
 
+import android.util.Log;
+
 import java.io.ObjectStreamException;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ import java.util.UUID;
 
 public class SecureSession {
 
+    private static final String TAG = MainActivityOTP.class.getName();
     private static SecureSession instance = null;
     private static Object locker = new Object();
 
@@ -42,9 +45,10 @@ public class SecureSession {
             //    return AesEncryption.Decrypt(localPassword, keys.get(key));
             }
             catch(Exception ex)
-            {}
+            {
+                Log.e(TAG, "Failed to get key value", ex);}
 
-        return "";
+        return null;
     }
 
     public void SetValue(String key, String value){
@@ -56,6 +60,7 @@ public class SecureSession {
         }
         catch(Exception ex)
         {
+            Log.e(TAG, "Failed to set key value", ex);
         }
 
         keys.put(key,val);

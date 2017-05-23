@@ -19,13 +19,14 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Created by Chiara on 20/05/2017.
  */
 
 public class AesEncryption {
+
+    private static final String TAG = MainActivityOTP.class.getName();
 
     public static void Init()
     {
@@ -47,7 +48,7 @@ public class AesEncryption {
         }
         catch(Exception ex)
         {
-
+            Log.e(TAG,"Error while encrypting: ", ex);
         }
         return ret;
     }
@@ -65,7 +66,7 @@ public class AesEncryption {
         }
         catch(Exception ex)
         {
-            Log.e("",ex.getMessage());
+            Log.e(TAG,"Error while decrypting: ", ex);
         }
         return ret;
     }

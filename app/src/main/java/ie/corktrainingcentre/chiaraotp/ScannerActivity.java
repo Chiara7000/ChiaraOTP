@@ -16,7 +16,8 @@ import android.content.Intent;
         import com.google.android.gms.vision.barcode.Barcode;
         import com.google.android.gms.vision.barcode.BarcodeDetector;
 
-        import android.util.SparseArray;
+import android.util.Log;
+import android.util.SparseArray;
         import android.view.SurfaceHolder;
         import android.view.SurfaceView;
         import android.widget.TextView;
@@ -25,6 +26,8 @@ import android.widget.Toast;
 import java.io.IOException;
 
 public class ScannerActivity extends AppCompatActivity {
+
+    private static final String TAG = ScannerActivity.class.getName();
     private SurfaceView cameraPreview;
     private CameraSource cameraSource;
     private BarcodeDetector barcodeDetector;
@@ -62,8 +65,7 @@ public class ScannerActivity extends AppCompatActivity {
                 try {
                     cameraSource.start(cameraPreview.getHolder());
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    //Log.e("CAMERA SOURCE", ie.getMessage());
+                    Log.e(TAG, "Failed to to start the camera", e);
                 }
             }
 
