@@ -1,6 +1,8 @@
 package ie.corktrainingcentre.chiaraotp;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,18 +13,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
+import ie.corktrainingcentre.chiaraotp.Fragments.TestFragment;
+import ie.corktrainingcentre.chiaraotp.Helper.RandomString;
 import ie.corktrainingcentre.chiaraotp.data.DBHelper;
-import ie.corktrainingcentre.chiaraotp.data.DbManager;
 import ie.corktrainingcentre.chiaraotp.data.OTBContract;
 
-import static android.R.attr.data;
-
 public class MainActivityOTP extends AppCompatActivity {
-
+    List<TestFragment> list = new ArrayList<TestFragment>();
     public FloatingActionButton goScanner;
 
     public void init(){
@@ -57,7 +63,51 @@ public class MainActivityOTP extends AppCompatActivity {
         RSAManager.GetInstance(this); //initialize
         DBHelper.getInstance(this);
 
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        int c=123456;
+
+        for(int i=0;i<10;i++){
+            TestFragment t = new TestFragment(View.generateViewId());
+            list.add(t);
+            transaction.add(R.id.otpContainer,t);
+           // t.SetText(Integer.toString(c++));
+        }
+
+        transaction.commit();
         init();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+        final int sekundi =0 ;
+        Timer timer = new Timer();
+        TimerTask t = new TimerTask() {
+            int sec = 0;
+            @Override
+            public void run() {
+
+                runOnUiThread(new Runnable() {
+                            @Override
+                    public void run() {
+
+                        for(TestFragment t:list){
+                            View v = findViewById(t.id);
+                            if(v!=null) {
+                                TextView tx=(TextView)v;
+                                tx.setText(RandomString.RandomStringOnlyNumbers(6));
+                            }
+                        }
+                    }
+                });
+            }
+        };
+        timer.scheduleAtFixedRate(t,1000,1000);
+
+
     }
 
     @Override

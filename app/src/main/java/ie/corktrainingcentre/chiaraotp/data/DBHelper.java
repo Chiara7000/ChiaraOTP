@@ -4,14 +4,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.BaseColumns;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import ie.corktrainingcentre.chiaraotp.Constants;
-import ie.corktrainingcentre.chiaraotp.RSAManager;
+import ie.corktrainingcentre.chiaraotp.Helper.Constants;
+import ie.corktrainingcentre.chiaraotp.Helper.RandomString;
+import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -30,6 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
             "APIURL TEXT, " +
             "TIMESTAMP TEXT, "+
             "TYPE TEXT" +
+            //int offset for seconds
             ");";
 
     private static final String TABLE_OTP_CONFIGS = "CREATE TABLE CONFIGS ("+
@@ -90,14 +90,14 @@ public class DBHelper extends SQLiteOpenHelper {
         //SELECT COUNT(*) FROM CONFIGS WHERE KEY=Constants.APPKEY
 
         //return count(*)>0
-        return false;
+        return true;
     }
 
     private static void CreateNewKey()
     {
         SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
         List<String> pars = new ArrayList<String>();
-        String tempKey = RandomString(30);
+        String tempKey = RandomString.RandomString(30);
         RSAManager rsa = RSAManager.GetInstance(null);
 
         pars.add(Constants.DATABASE_KEY_NAME);
@@ -112,20 +112,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    private static String RandomString(int length)
-    {
-        String validChars = "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm0123456789!_òç@#°à'ù§+*èé'£$%&/()=?^ì\\|<>,;.:-";
-        Random r= new Random();
 
-        if(length<6) length = 6;
-
-        String ret="";
-        for(int i=0; i<length; i++)
-        {
-            ret += validChars.charAt(r.nextInt(validChars.length()));
-        }
-        return ret;
-    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

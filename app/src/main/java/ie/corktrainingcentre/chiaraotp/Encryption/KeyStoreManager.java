@@ -1,4 +1,4 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Encryption;
 
 import android.content.Context;
 import android.security.KeyPairGeneratorSpec;
@@ -23,8 +23,10 @@ import java.util.Enumeration;
 
 import javax.security.auth.x500.X500Principal;
 
+import ie.corktrainingcentre.chiaraotp.MainActivityOTP;
+
 /**
- * Created by Ciro on 21/05/2017.
+ * Created by Chiara on 21/05/2017.
  */
 
 public class KeyStoreManager {

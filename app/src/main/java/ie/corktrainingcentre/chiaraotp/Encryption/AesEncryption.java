@@ -1,23 +1,17 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Encryption;
 
-import android.graphics.Bitmap;
 import android.util.Base64;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import ie.corktrainingcentre.chiaraotp.Helper.Constants;
+import ie.corktrainingcentre.chiaraotp.MainActivityOTP;
 
 
 /**

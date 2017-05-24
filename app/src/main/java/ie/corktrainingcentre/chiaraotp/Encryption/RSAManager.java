@@ -1,4 +1,4 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Encryption;
 
 import android.content.Context;
 import android.security.KeyPairGeneratorSpec;
@@ -15,14 +15,14 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Objects;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
-import javax.crypto.IllegalBlockSizeException;
 import javax.security.auth.x500.X500Principal;
+
+import ie.corktrainingcentre.chiaraotp.Helper.Constants;
+import ie.corktrainingcentre.chiaraotp.MainActivityOTP;
 
 /**
  * Created by Chiara on 21/05/2017.

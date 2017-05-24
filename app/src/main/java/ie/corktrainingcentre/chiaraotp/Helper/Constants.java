@@ -1,4 +1,4 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Helper;
 
 /**
  * Created by Chiara on 21/05/2017.

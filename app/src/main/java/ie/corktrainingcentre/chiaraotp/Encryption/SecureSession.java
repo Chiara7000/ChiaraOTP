@@ -1,13 +1,12 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Encryption;
 
 import android.util.Log;
 
-import java.io.ObjectStreamException;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
+
+import ie.corktrainingcentre.chiaraotp.MainActivityOTP;
 
 /**
  * Created by Chiara on 20/05/2017.

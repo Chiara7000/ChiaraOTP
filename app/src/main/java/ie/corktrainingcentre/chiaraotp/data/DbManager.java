@@ -1,22 +1,13 @@
 package ie.corktrainingcentre.chiaraotp.data;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
+
 import java.text.SimpleDateFormat;
-import android.icu.util.TimeZone;
-import android.provider.ContactsContract;
-import android.provider.SyncStateContract;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
-import ie.corktrainingcentre.chiaraotp.Constants;
-import ie.corktrainingcentre.chiaraotp.RSAManager;
 
 public class DbManager {
 
