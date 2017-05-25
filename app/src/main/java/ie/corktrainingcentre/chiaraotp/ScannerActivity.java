@@ -7,7 +7,8 @@ import android.content.Context;
 import android.content.Intent;
         import android.content.pm.PackageManager;
         import android.support.v4.app.ActivityCompat;
-        import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
 
         import com.google.android.gms.common.api.CommonStatusCodes;
@@ -20,7 +21,8 @@ import android.util.Log;
 import android.util.SparseArray;
         import android.view.SurfaceHolder;
         import android.view.SurfaceView;
-        import android.widget.TextView;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -33,7 +35,7 @@ public class ScannerActivity extends AppCompatActivity {
     private BarcodeDetector barcodeDetector;
     private TextView barcodeResult;
 
-
+    private static final int CAMERA_PERMISSION_CAMERA = 0x000000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,12 @@ public class ScannerActivity extends AppCompatActivity {
 
     private void createCameraSource() {
 
+        if (ActivityCompat.checkSelfPermission(ScannerActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(ScannerActivity.this,new String[]{Manifest.permission.CAMERA},0x000000);
+            return;
+        }
+
         barcodeDetector = new BarcodeDetector.Builder(this).setBarcodeFormats(Barcode.QR_CODE).build();
 
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
@@ -58,10 +66,7 @@ public class ScannerActivity extends AppCompatActivity {
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                if (ActivityCompat.checkSelfPermission(ScannerActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                {
-                    return;
-                }
+
                 try {
                     cameraSource.start(cameraPreview.getHolder());
                 } catch (IOException e) {
@@ -124,5 +129,21 @@ public class ScannerActivity extends AppCompatActivity {
         super.onDestroy();
         cameraSource.release();
         barcodeDetector.release();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[],int[] grantResults)
+    {
+        switch (requestCode) {
+            case CAMERA_PERMISSION_CAMERA: {
+                if (grantResults.length > 0 && grantResults[0]== PackageManager.PERMISSION_GRANTED) {
+
+                    Intent startMain = new Intent(ScannerActivity.this, ScannerActivity.class);
+                    startActivity(startMain);
+                }
+                return;
+            }
+        }
+        return;
     }
 }

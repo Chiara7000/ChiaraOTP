@@ -1,13 +1,17 @@
 package ie.corktrainingcentre.chiaraotp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -31,12 +35,12 @@ public class MainActivityOTP extends AppCompatActivity {
     List<TestFragment> list = new ArrayList<TestFragment>();
     public FloatingActionButton goScanner;
 
-    public void init(){
-        goScanner=(FloatingActionButton)findViewById(R.id.goScanner);
-        goScanner.setOnClickListener(new View.OnClickListener(){
+    public void init() {
+        goScanner = (FloatingActionButton) findViewById(R.id.goScanner);
+        goScanner.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                Intent app = new Intent(MainActivityOTP.this,ScannerActivity.class);
+            public void onClick(View v) {
+                Intent app = new Intent(MainActivityOTP.this, ScannerActivity.class);
                 startActivityForResult(app, 1);
             }
 
@@ -65,13 +69,13 @@ public class MainActivityOTP extends AppCompatActivity {
 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        int c=123456;
+        int c = 123456;
 
-        for(int i=0;i<10;i++){
+        for (int i = 0; i < 10; i++) {
             TestFragment t = new TestFragment(View.generateViewId());
             list.add(t);
-            transaction.add(R.id.otpContainer,t);
-           // t.SetText(Integer.toString(c++));
+            transaction.add(R.id.otpContainer, t);
+            // t.SetText(Integer.toString(c++));
         }
 
         transaction.commit();
@@ -83,21 +87,26 @@ public class MainActivityOTP extends AppCompatActivity {
         super.onStart();
 
 
-        final int sekundi =0 ;
+        Vibrator v = (Vibrator) this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        v.vibrate(500);
+
+        final int sekundi = 0;
         Timer timer = new Timer();
         TimerTask t = new TimerTask() {
             int sec = 0;
+
             @Override
             public void run() {
 
                 runOnUiThread(new Runnable() {
-                            @Override
+                    @Override
                     public void run() {
 
-                        for(TestFragment t:list){
+                        for (TestFragment t : list) {
                             View v = findViewById(t.id);
-                            if(v!=null) {
-                                TextView tx=(TextView)v;
+                            if (v != null) {
+                                TextView tx = (TextView) v;
                                 tx.setText(RandomString.RandomStringOnlyNumbers(6));
                             }
                         }
@@ -105,13 +114,16 @@ public class MainActivityOTP extends AppCompatActivity {
                 });
             }
         };
-        timer.scheduleAtFixedRate(t,1000,1000);
+        timer.scheduleAtFixedRate(t, 1000, 1000);
 
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Vibrator v = (Vibrator) this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        v.vibrate(500);
 
         // Check which request we're responding to
         if (requestCode == 1) {
@@ -120,10 +132,10 @@ public class MainActivityOTP extends AppCompatActivity {
                 Bundle res = data.getExtras();
                 String result = res.getString("code");
 
-                OTBContract model = OTBContract.GetOTBContract(result);
+                //OTBContract model = OTBContract.GetOTBContract(result);
 
-                toast(model.toString());
-
+                //toast(model.toString());
+                toast("ricevuto");
                 //encrypt
 
                 //save in the database
