@@ -1,17 +1,14 @@
 package ie.corktrainingcentre.chiaraotp;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -22,18 +19,20 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
-import ie.corktrainingcentre.chiaraotp.Fragments.TestFragment;
+import ie.corktrainingcentre.chiaraotp.Fragments.OtpFragment;
 import ie.corktrainingcentre.chiaraotp.Helper.RandomString;
 import ie.corktrainingcentre.chiaraotp.data.DBHelper;
 import ie.corktrainingcentre.chiaraotp.data.OTBContract;
 
 public class MainActivityOTP extends AppCompatActivity {
-    List<TestFragment> list = new ArrayList<TestFragment>();
+    List<OtpFragment> list = new ArrayList<OtpFragment>();
     public FloatingActionButton goScanner;
+    Timer timer;
 
     public void init() {
         goScanner = (FloatingActionButton) findViewById(R.id.goScanner);
@@ -72,7 +71,8 @@ public class MainActivityOTP extends AppCompatActivity {
         int c = 123456;
 
         for (int i = 0; i < 10; i++) {
-            TestFragment t = new TestFragment(View.generateViewId());
+            OtpFragment t = new OtpFragment();
+
             list.add(t);
             transaction.add(R.id.otpContainer, t);
             // t.SetText(Integer.toString(c++));
@@ -86,13 +86,15 @@ public class MainActivityOTP extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-
-        Vibrator v = (Vibrator) this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+       // Vibrator v = (Vibrator) this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         // Vibrate for 500 milliseconds
-        v.vibrate(500);
+        //v.vibrate(500);
 
-        final int sekundi = 0;
-        Timer timer = new Timer();
+    }
+
+    protected void onResume(){
+        super.onResume();
+        timer = new Timer();
         TimerTask t = new TimerTask() {
             int sec = 0;
 
@@ -103,12 +105,12 @@ public class MainActivityOTP extends AppCompatActivity {
                     @Override
                     public void run() {
 
-                        for (TestFragment t : list) {
-                            View v = findViewById(t.id);
-                            if (v != null) {
-                                TextView tx = (TextView) v;
-                                tx.setText(RandomString.RandomStringOnlyNumbers(6));
-                            }
+                        Random r = new Random ();
+
+                        for (OtpFragment t : list) {
+                            t.setOtp(RandomString.RandomStringOnlyNumbers(6));
+                            t.setAppName("ciao");
+                            t.setTime(r.nextInt(30)+1);
                         }
                     }
                 });
@@ -116,7 +118,11 @@ public class MainActivityOTP extends AppCompatActivity {
         };
         timer.scheduleAtFixedRate(t, 1000, 1000);
 
+    }
 
+    protected void onPause(){
+        super.onPause();
+        timer.cancel();
     }
 
     @Override
@@ -132,10 +138,9 @@ public class MainActivityOTP extends AppCompatActivity {
                 Bundle res = data.getExtras();
                 String result = res.getString("code");
 
-                //OTBContract model = OTBContract.GetOTBContract(result);
+                OTBContract model = OTBContract.GetOTBContract(result);
 
-                //toast(model.toString());
-                toast("ricevuto");
+                toast("Ricevuto: " + model.test());
                 //encrypt
 
                 //save in the database

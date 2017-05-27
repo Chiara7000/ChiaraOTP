@@ -38,25 +38,25 @@ public final class OTBContract implements BaseColumns{
     {}
 
     public static OTBContract GetOTBContract(String json){
+
+        OTBContract c = null;
+
         try {
             JSONObject mainObject = new JSONObject(json);
-
-            OTBContract c = new OTBContract();
+            c = new OTBContract();
             c.secret = mainObject.getString("Secret");
             c.appname = mainObject.getString("AppName");
             c.interval = mainObject.getInt("Interval");
             c.digits = mainObject.getInt("Digits");
-            c.apiUrl = mainObject.getString("ApiUrl");
+            c.apiUrl = mainObject.getString("TimeApi");
             //c.type = mainObject.getString("Type");
-            return c;
-
         }
         catch(JSONException e)
         {
             Log.e(TAG, "unexpected JSON exception", e);
             // Do something to recover ... or kill the app.
         }
-        return null;
+        return c;
     }
 
     public int getId(){
@@ -101,7 +101,8 @@ public final class OTBContract implements BaseColumns{
         apiUrl=value;
     }
 
-    public String ToString(){
+
+    public String test(){
         return "Secret:"+this.getSecret();
     }
 }

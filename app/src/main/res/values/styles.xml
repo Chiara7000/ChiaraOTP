@@ -23,9 +23,34 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:capitalize">characters</item>
         <item name="android:typeface">monospace</item>
-        <item name="android:textStyle">italic</item>
-        <item name="android:textSize">14pt</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">20pt</item>
         <item name="android:textColor">@color/white</item>/>
     </style>
+
+    <style name="Otp" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:capitalize">characters</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14pt</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/white</item>/>
+    </style>
+
+    <style name="nameApp" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:capitalize">characters</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">6pt</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/white</item>/>
+    </style>
+
 
 </resources>
