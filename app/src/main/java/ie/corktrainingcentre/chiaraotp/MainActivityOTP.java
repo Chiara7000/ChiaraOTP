@@ -106,9 +106,11 @@ public class MainActivityOTP extends AppCompatActivity {
                     public void run() {
 
                         Random r = new Random ();
+                        String temp = OneTimePasswordAlgorithm.generateOTP("chiave");
 
                         for (OtpFragment t : list) {
-                            t.setOtp(RandomString.RandomStringOnlyNumbers(6));
+                            //t.setOtp(RandomString.RandomStringOnlyNumbers(6));
+                            t.setOtp(temp);
                             t.setAppName("ciao");
                             t.setTime(r.nextInt(30)+1);
                         }
