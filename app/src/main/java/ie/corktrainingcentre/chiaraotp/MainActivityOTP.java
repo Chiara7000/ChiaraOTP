@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
 import ie.corktrainingcentre.chiaraotp.Fragments.OtpFragment;
 import ie.corktrainingcentre.chiaraotp.Helper.RandomString;
 import ie.corktrainingcentre.chiaraotp.data.DBHelper;
-import ie.corktrainingcentre.chiaraotp.data.OTBContract;
+import ie.corktrainingcentre.chiaraotp.data.OtpModel;
 
 public class MainActivityOTP extends AppCompatActivity {
     List<OtpFragment> list = new ArrayList<OtpFragment>();
@@ -85,11 +84,6 @@ public class MainActivityOTP extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-       // Vibrator v = (Vibrator) this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
-        //v.vibrate(500);
-
     }
 
     protected void onResume(){
@@ -138,7 +132,7 @@ public class MainActivityOTP extends AppCompatActivity {
                 Bundle res = data.getExtras();
                 String result = res.getString("code");
 
-                OTBContract model = OTBContract.GetOTBContract(result);
+                OtpModel model = OtpModel.GetOTBContract(result);
 
                 toast("Ricevuto: " + model.test());
                 //encrypt

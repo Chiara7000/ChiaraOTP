@@ -9,9 +9,10 @@ import org.json.JSONObject;
 import ie.corktrainingcentre.chiaraotp.MainActivityOTP;
 
 
-public final class OTBContract implements BaseColumns{
+public final class OtpModel implements BaseColumns{
 
     private static final String TAG = MainActivityOTP.class.getName();
+
     private String secret;
     private String appname;
     private int interval;
@@ -19,31 +20,16 @@ public final class OTBContract implements BaseColumns{
     private int id;
     private String apiUrl;
 
-
-    public OTBContract(String secret,String appname,int interval,int digits,String apiUrl)
-    {
-        this.secret = secret;
-        this.appname = appname;
-        this.interval = interval;
-        this.digits = digits;
-        this.apiUrl = apiUrl;
-    }
-
-    public OTBContract(int id)
-    {
-        this.id =id;
-    }
-
-    private OTBContract()
+    private OtpModel()
     {}
 
-    public static OTBContract GetOTBContract(String json){
+    public static OtpModel GetOTBContract(String json){
 
-        OTBContract c = null;
+        OtpModel c = null;
 
         try {
             JSONObject mainObject = new JSONObject(json);
-            c = new OTBContract();
+            c = new OtpModel();
             c.secret = mainObject.getString("Secret");
             c.appname = mainObject.getString("AppName");
             c.interval = mainObject.getInt("Interval");
@@ -51,7 +37,7 @@ public final class OTBContract implements BaseColumns{
             c.apiUrl = mainObject.getString("TimeApi");
             //c.type = mainObject.getString("Type");
         }
-        catch(JSONException e)
+        catch(Exception e)
         {
             Log.e(TAG, "unexpected JSON exception", e);
             // Do something to recover ... or kill the app.

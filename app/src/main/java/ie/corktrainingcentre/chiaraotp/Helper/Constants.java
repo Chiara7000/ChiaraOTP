@@ -14,4 +14,6 @@ public class Constants {
     //RSA
     public final static String APPKEY = "ChiaraOTPKey1";
     public final static String RSA_MODE =  "RSA/ECB/PKCS1Padding";
+
+    public final static boolean DEBUG = true;
 }

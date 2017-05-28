@@ -20,14 +20,14 @@ public class DbManager {
         dbHelper = DBHelper.getInstance(ctx);
     }
 
-    public void Delete(OTBContract model)
+    public void Delete(OtpModel model)
     {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("DELETE FROM OTP WHERE ID=?",new String[]{Integer.toString(model.getId())});
         db.close();
     }
 
-    public void Save(OTBContract model){
+    public void Save(OtpModel model){
 
         int id = GetAppId(model.getAppName());
 

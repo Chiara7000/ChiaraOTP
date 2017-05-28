@@ -22,19 +22,19 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_OTP_CREATE = "CREATE TABLE OTP ("+
             "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "SECRET TEXT, " +
-            "APPNAME TEXT, " +
-            "INTERVAL INTEGER, " +
-            "DIGITS INTEGER, " +
-            "APIURL TEXT, " +
-            "TIMESTAMP TEXT, "+
-            "TYPE TEXT" +
-            //int offset for seconds
+            "SECRET TEXT NOT NULL, " +
+            "APPNAME TEXT NOT NULL UNIQUE, " +
+            "INTERVAL INTEGER NOT NULL, " +
+            "DIGITS INTEGER NOT NULL, " +
+            "APIURL TEXT NOT NULL, " +
+            "TIMESTAMP TEXT NOT NULL, "+
+            "TYPE TEXT NOT NULL, " +
+            "OFFSET INTEGER" + //int offset for seconds
             ");";
 
     private static final String TABLE_OTP_CONFIGS = "CREATE TABLE CONFIGS ("+
             "KEY TEXT PRIMARY KEY, " +
-            "VALUE TEXT " +
+            "VALUE TEXT NOT NULL" +
             ");";
 
     public static DBHelper getInstance(Context context)
@@ -56,6 +56,11 @@ public class DBHelper extends SQLiteOpenHelper {
     private static void CreateTables()
     {
         SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
+
+        if(Constants.DEBUG){
+            db.execSQL("DROP TABLE OTP");
+            db.execSQL("DROP TABLE CONFIGS");
+        }
 
         if(!CheckTableExistance("OTP"))
             db.execSQL(TABLE_OTP_CREATE);
