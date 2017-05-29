@@ -6,6 +6,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ie.corktrainingcentre.chiaraotp.Encryption.AesEncryption;
 import ie.corktrainingcentre.chiaraotp.MainActivityOTP;
 
 
@@ -85,6 +86,10 @@ public final class OtpModel implements BaseColumns{
     }
     public void setApiUrl(String value){
         apiUrl=value;
+    }
+
+    public String setEncriptSecret (){
+        return AesEncryption.Encrypt(getSecret(),"booooo");
     }
 
 

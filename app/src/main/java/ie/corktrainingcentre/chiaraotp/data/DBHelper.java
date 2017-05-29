@@ -91,11 +91,34 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static Boolean CheckKeyExists(){
 
-        //read the database to check if the key already exists
-        //SELECT COUNT(*) FROM CONFIGS WHERE KEY=Constants.APPKEY
+        SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM CONFIGS WHERE KEY=?", new String[]{ Constants.APPKEY });
 
-        //return count(*)>0
-        return true;
+        if(!cursor.moveToFirst())
+        {
+            cursor.close();
+            return false;
+        }
+
+        int count = cursor.getInt(0);
+        cursor.close();
+        return count > 0;
+    }
+
+    private static String readAESKey(){
+
+        SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT VALUE FROM CONFIGS WHERE KEY=?", new String[]{ Constants.APPKEY });
+
+        if(!cursor.moveToFirst())
+        {
+            cursor.close();
+            return null;
+        }
+
+        String v = cursor.getString(0);
+        cursor.close();
+        return v;
     }
 
     private static void CreateNewKey()

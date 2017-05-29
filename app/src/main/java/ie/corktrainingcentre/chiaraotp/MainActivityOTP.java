@@ -29,7 +29,7 @@ import ie.corktrainingcentre.chiaraotp.data.DBHelper;
 import ie.corktrainingcentre.chiaraotp.data.OtpModel;
 
 public class MainActivityOTP extends AppCompatActivity {
-    List<OtpFragment> list = new ArrayList<OtpFragment>();
+    List<OtpEntry> list = new ArrayList<OtpEntry>();
     public FloatingActionButton goScanner;
     Timer timer;
 
@@ -71,8 +71,12 @@ public class MainActivityOTP extends AppCompatActivity {
 
         for (int i = 0; i < 10; i++) {
             OtpFragment t = new OtpFragment();
+            OtpEntry o = new OtpEntry();
+            o.setFragment(t);
+            o.setAppName("Company " + Integer.toString(i));
+            o.setSecret(Integer.toString(i));
 
-            list.add(t);
+            list.add(o);
             transaction.add(R.id.otpContainer, t);
             // t.SetText(Integer.toString(c++));
         }
@@ -100,13 +104,12 @@ public class MainActivityOTP extends AppCompatActivity {
                     public void run() {
 
                         Random r = new Random ();
-                        String temp = OneTimePasswordAlgorithm.generateOTP("chiave");
 
-                        for (OtpFragment t : list) {
-                            //t.setOtp(RandomString.RandomStringOnlyNumbers(6));
-                            t.setOtp(temp);
-                            t.setAppName("ciao");
-                            t.setTime(r.nextInt(30)+1);
+                        for (OtpEntry o : list) {
+
+                            o.getFragment().setOtp(o.getOtp());
+                            o.getFragment().setAppName(o.getAppName());
+                            o.getFragment().setTime(r.nextInt(30)+1);
                         }
                     }
                 });

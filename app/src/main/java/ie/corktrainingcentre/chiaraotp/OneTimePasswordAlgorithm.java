@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -17,30 +18,17 @@ import static android.os.Build.VERSION_CODES.M;
  */
 
 public class OneTimePasswordAlgorithm {
-    private OneTimePasswordAlgorithm() {}
+
+    private ICalendar calendar = null;
+    private static final int[] DIGITS_POWER = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
+
+    public OneTimePasswordAlgorithm(ICalendar cal) {
+        this.calendar = cal;
+    }
 
     private static final int[] doubleDigits = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9};
 
-    public static int calcChecksum(long num, int digits) {
-        boolean doubleDigit = true;
-        int total = 0;
-        while (0 < digits--) {
-            int digit = (int) (num % 10);
-            num /= 10;
-            if (doubleDigit) {
-                digit = doubleDigits[digit];
-            }
-            total += digit;
-            doubleDigit = !doubleDigit;
-        }
-        int result = total % 10;
-        if (result > 0) {
-            result = 10 - result;
-        }
-        return result;
-    }
-
-    public static byte[] hmac_sha1(byte[] keyBytes, byte[] text)
+    private byte[] hmac_sha1(byte[] keyBytes, byte[] text)
             throws NoSuchAlgorithmException, InvalidKeyException {
         Mac hmacSha1;
         try {
@@ -54,11 +42,8 @@ public class OneTimePasswordAlgorithm {
         return hmacSha1.doFinal(text);
     }
 
-    private static final int[] DIGITS_POWER
-            // 0 1  2   3    4     5      6       7        8
-            = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
 
-    static public String generateOTP(String secretKey){
+    public String generateOTP(String secretKey){
         String result = null;
         try {
         byte[] secret = secretKey.getBytes();
@@ -85,14 +70,12 @@ public class OneTimePasswordAlgorithm {
         return result;
     }
 
-    private static String GetUTCdatetimeAsString()
+    private String GetUTCdatetimeAsString()
     {
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd hh:mm:");
         sdf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-        final String utcTime = sdf.format(new Date());
-
-        Calendar calendar = Calendar.getInstance();
-        int seconds = calendar.get(Calendar.SECOND)/30;
+        final String utcTime = sdf.format(calendar.getDate());
+        int seconds = calendar.getSeconds()/30;
 
         return utcTime + Integer.toString(seconds);
     }
