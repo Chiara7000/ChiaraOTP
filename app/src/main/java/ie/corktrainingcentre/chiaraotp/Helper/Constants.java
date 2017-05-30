@@ -12,7 +12,7 @@ public class Constants {
     public final static String APP_NAME = "ChiaraOTP";
     public final static String DATABASE_KEY_NAME = "ChiaraOTPKey";
     //RSA
-    public final static String APPKEY = "ChiaraOTPKey1";
+    public final static String APPKEY = "ChiaraOTPKey1";  //name of the key in the secure storage
     public final static String RSA_MODE =  "RSA/ECB/PKCS1Padding";
 
     public final static boolean DEBUG = true;

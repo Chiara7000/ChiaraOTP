@@ -18,10 +18,19 @@ public class OtpEntry {
     private OneTimePasswordAlgorithm otp = null;
     private ICalendar customClock;
     private int offSet;
+    private MainActivityOTP parent=null;
+    private int id=0;
 
     public OtpEntry(){
         customClock = new CustomCalendar();
         otp = new OneTimePasswordAlgorithm(customClock);
+    }
+
+    public MainActivityOTP getParent() {
+        return this.parent;
+    }
+    public void setParent(MainActivityOTP mainAct) {
+        this.parent = mainAct;
     }
 
     private ICalendar getCustomClock() {
@@ -48,6 +57,14 @@ public class OtpEntry {
         return secret;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setSecret(String secret) {
         this.secret = secret;
     }
@@ -58,6 +75,7 @@ public class OtpEntry {
 
     public void setFragment(OtpFragment fragment) {
         this.fragment = fragment;
+        this.fragment.setEntry(this);
     }
 
     public String getAppName() {

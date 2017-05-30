@@ -20,8 +20,9 @@ public final class OtpModel implements BaseColumns{
     private int digits;
     private int id;
     private String apiUrl;
+    private int offset;
 
-    private OtpModel()
+    public OtpModel()
     {}
 
     public static OtpModel GetOTBContract(String json){
@@ -44,6 +45,13 @@ public final class OtpModel implements BaseColumns{
             // Do something to recover ... or kill the app.
         }
         return c;
+    }
+
+    public int getOffset(){
+        return offset;
+    }
+    public void setOffset(int offset){
+        this.offset=offset;
     }
 
     public int getId(){

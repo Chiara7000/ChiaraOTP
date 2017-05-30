@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,11 +58,11 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
 
-        if(Constants.DEBUG){
+        /*if(Constants.DEBUG){
             db.execSQL("DROP TABLE OTP");
             db.execSQL("DROP TABLE CONFIGS");
         }
-
+*/
         if(!CheckTableExistance("OTP"))
             db.execSQL(TABLE_OTP_CREATE);
 
@@ -69,7 +70,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL(TABLE_OTP_CONFIGS);
 
         //only if there is no key in the database
-        if(!CheckKeyExists())
+        //if(!CheckKeyExists())
             CreateNewKey();
     }
 
@@ -92,7 +93,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static Boolean CheckKeyExists(){
 
         SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM CONFIGS WHERE KEY=?", new String[]{ Constants.APPKEY });
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM CONFIGS WHERE KEY=?", new String[]{ Constants.DATABASE_KEY_NAME });
 
         if(!cursor.moveToFirst())
         {
@@ -105,10 +106,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return count > 0;
     }
 
-    private static String readAESKey(){
+    public static String readAESKey(){
 
         SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT VALUE FROM CONFIGS WHERE KEY=?", new String[]{ Constants.APPKEY });
+        Cursor cursor = db.rawQuery("SELECT VALUE FROM CONFIGS WHERE KEY=?", new String[]{ Constants.DATABASE_KEY_NAME });
 
         if(!cursor.moveToFirst())
         {
@@ -133,6 +134,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         try {
             db.execSQL("INSERT INTO CONFIGS(KEY,VALUE) VALUES(?,?)", pars.toArray());
+        }
+        catch(Exception e)
+        {
+            Log.e("DBHelper",e.getMessage());
         }
         finally{
             if(db.isOpen())

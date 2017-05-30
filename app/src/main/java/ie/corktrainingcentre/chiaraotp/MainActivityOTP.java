@@ -24,14 +24,17 @@ import java.util.TimerTask;
 
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
 import ie.corktrainingcentre.chiaraotp.Fragments.OtpFragment;
+import ie.corktrainingcentre.chiaraotp.Helper.Constants;
 import ie.corktrainingcentre.chiaraotp.Helper.RandomString;
+import ie.corktrainingcentre.chiaraotp.Helper.TestRecords;
 import ie.corktrainingcentre.chiaraotp.data.DBHelper;
+import ie.corktrainingcentre.chiaraotp.data.DbManager;
 import ie.corktrainingcentre.chiaraotp.data.OtpModel;
 
 public class MainActivityOTP extends AppCompatActivity {
     public List<OtpEntry> list = new ArrayList<OtpEntry>();
     public FloatingActionButton goScanner;
-    Timer timer;
+    public Timer timer;
 
     public void init() {
         goScanner = (FloatingActionButton) findViewById(R.id.goScanner);
@@ -65,33 +68,34 @@ public class MainActivityOTP extends AppCompatActivity {
         RSAManager.GetInstance(this); //initialize
         DBHelper.getInstance(this);
 
+        //populate otp with test records when in debug mode
+        if(Constants.DEBUG)
+            TestRecords.InsertTestingRecords();
+
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        int c = 123456;
 
-        for (int i = 0; i < 10; i++) {
+        DbManager m=new DbManager();
+        for (OtpModel otp : m.ReadAll())
+        {
             OtpFragment t = new OtpFragment();
             OtpEntry o = new OtpEntry();
             o.setFragment(t);
-            o.setAppName("Company " + Integer.toString(i));
-            o.setSecret(Integer.toString(i));
+            o.setAppName(otp.getAppName());
+            o.setSecret(otp.getSecret());
+            o.setParent(this);
+            o.setId(otp.getId());
+            o.setOffSet(otp.getOffset());
 
             list.add(o);
             transaction.add(R.id.otpContainer, t);
-            // t.SetText(Integer.toString(c++));
         }
 
         transaction.commit();
         init();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    protected void onResume(){
-        super.onResume();
+    public void restart(){
         timer = new Timer();
         TimerTask t = new TimerTask() {
             int sec = 0;
@@ -116,7 +120,16 @@ public class MainActivityOTP extends AppCompatActivity {
             }
         };
         timer.scheduleAtFixedRate(t, 1000, 1000);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    protected void onResume(){
+        super.onResume();
+        restart();
     }
 
     protected void onPause(){

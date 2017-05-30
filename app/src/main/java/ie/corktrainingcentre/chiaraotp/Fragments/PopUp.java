@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,9 +18,10 @@ import android.widget.TextView;
 
 import ie.corktrainingcentre.chiaraotp.OtpEntry;
 import ie.corktrainingcentre.chiaraotp.R;
+import ie.corktrainingcentre.chiaraotp.data.DbManager;
 
 /**
- * Created by AppDeveloper on 30/05/2017.
+ * Created by Chiara on 30/05/2017.
  */
 
 public class PopUp extends DialogFragment implements View.OnClickListener{
@@ -27,6 +29,43 @@ public class PopUp extends DialogFragment implements View.OnClickListener{
     private Button yesButton;
     private Button noButton;
     private TextView popupText;
+    private OtpEntry entry=null;
+    private Boolean opened = false;
+
+    private static PopUp instance = null;
+    private static Object locker = new Object();
+
+    private void PopUp(){}
+
+    public static PopUp getInstance(){
+        if(instance==null)
+            synchronized (locker) {
+                if (instance == null) {
+                    instance=new PopUp();
+                }
+            }
+        return instance;
+    }
+
+    public void setEntry(OtpEntry entry) {
+        this.entry = entry;
+    }
+
+    @Override
+    public void show(FragmentManager f, String message) {
+        if (!opened) {
+           opened = true;
+            super.show(f, message);
+        }
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        opened = false;
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.popup_layout, null);
@@ -43,13 +82,16 @@ public class PopUp extends DialogFragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view){
-        if (view.getId()== R.id.yesButton){
-            getActivity().getFragmentManager().beginTransaction().remove(this).commit();
-            dismiss();
+        if (view.getId()== R.id.yesButton) {
+            if((new DbManager()).Delete(this.entry.getId())) //delete the record from the database
+            {
+                this.entry.getParent().timer.cancel();
+                getActivity().getFragmentManager().beginTransaction().remove(this.entry.getFragment()).commit();
+                this.entry.getParent().list.remove(this.entry);
+                this.entry.getParent().restart();
+            }
         }
-        else if (view.getId() == R.id.noButton){
-            dismiss();
-        }
+        dismiss();
     }
 }
 
