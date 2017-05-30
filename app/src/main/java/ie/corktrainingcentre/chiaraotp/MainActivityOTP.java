@@ -29,7 +29,7 @@ import ie.corktrainingcentre.chiaraotp.data.DBHelper;
 import ie.corktrainingcentre.chiaraotp.data.OtpModel;
 
 public class MainActivityOTP extends AppCompatActivity {
-    List<OtpEntry> list = new ArrayList<OtpEntry>();
+    public List<OtpEntry> list = new ArrayList<OtpEntry>();
     public FloatingActionButton goScanner;
     Timer timer;
 
@@ -123,6 +123,8 @@ public class MainActivityOTP extends AppCompatActivity {
         super.onPause();
         timer.cancel();
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
