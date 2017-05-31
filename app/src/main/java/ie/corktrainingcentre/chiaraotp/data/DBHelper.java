@@ -3,9 +3,11 @@ package ie.corktrainingcentre.chiaraotp.data;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,15 +15,17 @@ import ie.corktrainingcentre.chiaraotp.Helper.Constants;
 import ie.corktrainingcentre.chiaraotp.Helper.RandomString;
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "otp.db";
 
     private static Context appContext = null;
     private static DBHelper dbInstance = null;
 
-    private static final String TABLE_OTP_CREATE = "CREATE TABLE OTP ("+
+    private static final String TABLE_OTP_CREATE = "CREATE TABLE IF NOT EXISTS OTP ("+
             "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "SECRET TEXT NOT NULL, " +
             "APPNAME TEXT NOT NULL UNIQUE, " +
@@ -33,7 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
             "OFFSET INTEGER" + //int offset for seconds
             ");";
 
-    private static final String TABLE_OTP_CONFIGS = "CREATE TABLE CONFIGS ("+
+    private static final String TABLE_OTP_CONFIGS = "CREATE TABLE IF NOT EXISTS CONFIGS ("+
             "KEY TEXT PRIMARY KEY, " +
             "VALUE TEXT NOT NULL" +
             ");";
@@ -44,9 +48,18 @@ public class DBHelper extends SQLiteOpenHelper {
         {
             DBHelper.appContext = context.getApplicationContext();
             DBHelper.dbInstance = new DBHelper();
+
+            SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
+            db.close();
+
             CreateTables();
         }
         return DBHelper.dbInstance;
+    }
+
+    private static boolean doesDatabaseExist(Context context) {
+        File dbFile = context.getApplicationContext().getDatabasePath(DATABASE_NAME);
+        return dbFile.exists();
     }
 
     private DBHelper ()
@@ -58,36 +71,12 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
 
-        /*if(Constants.DEBUG){
-            db.execSQL("DROP TABLE OTP");
-            db.execSQL("DROP TABLE CONFIGS");
-        }
-*/
-        if(!CheckTableExistance("OTP"))
-            db.execSQL(TABLE_OTP_CREATE);
-
-        if(!CheckTableExistance("CONFIGS"))
-            db.execSQL(TABLE_OTP_CONFIGS);
+        db.execSQL(TABLE_OTP_CREATE);
+        db.execSQL(TABLE_OTP_CONFIGS);
 
         //only if there is no key in the database
-        //if(!CheckKeyExists())
+        if(!CheckKeyExists())
             CreateNewKey();
-    }
-
-    private static boolean CheckTableExistance(String table)
-    {
-        SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' and name=?", new String[]{ table });
-
-        if(!cursor.moveToFirst())
-        {
-            cursor.close();
-            return false;
-        }
-
-        int count = cursor.getInt(0);
-        cursor.close();
-        return count > 0;
     }
 
     private static Boolean CheckKeyExists(){
@@ -145,8 +134,6 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-
-
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -154,6 +141,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if(Constants.DEBUG){
 
+            //TODO: EXPORT DATA, TO RE-IMPORT AFTER THE NEW STRUCTURE IS IN PLACE
+
+            db.execSQL("DROP TABLE IF EXISTS OTP");
+            db.execSQL("DROP TABLE IF EXISTS CONFIGS");
+        }
     }
 }

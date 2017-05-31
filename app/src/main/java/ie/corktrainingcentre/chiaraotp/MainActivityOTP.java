@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
+import ie.corktrainingcentre.chiaraotp.Encryption.AesEncryption;
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
 import ie.corktrainingcentre.chiaraotp.Fragments.OtpFragment;
 import ie.corktrainingcentre.chiaraotp.Helper.Constants;
@@ -30,6 +32,8 @@ import ie.corktrainingcentre.chiaraotp.Helper.TestRecords;
 import ie.corktrainingcentre.chiaraotp.data.DBHelper;
 import ie.corktrainingcentre.chiaraotp.data.DbManager;
 import ie.corktrainingcentre.chiaraotp.data.OtpModel;
+
+import static ie.corktrainingcentre.chiaraotp.R.id.otp;
 
 public class MainActivityOTP extends AppCompatActivity {
     public List<OtpEntry> list = new ArrayList<OtpEntry>();
@@ -46,7 +50,6 @@ public class MainActivityOTP extends AppCompatActivity {
             }
 
         });
-
     }
 
     @Override
@@ -72,8 +75,20 @@ public class MainActivityOTP extends AppCompatActivity {
         if(Constants.DEBUG)
             TestRecords.InsertTestingRecords();
 
+        refreshEntries();
+
+        init();
+    }
+
+    public void refreshEntries(){
+
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+        //remove previous fragments
+        for (OtpEntry otp : list){
+            otp.getFragment();
+            transaction.remove(otp.getFragment());
+        }
 
         DbManager m=new DbManager();
         for (OtpModel otp : m.ReadAll())
@@ -92,7 +107,6 @@ public class MainActivityOTP extends AppCompatActivity {
         }
 
         transaction.commit();
-        init();
     }
 
     public void restart(){
@@ -137,8 +151,6 @@ public class MainActivityOTP extends AppCompatActivity {
         timer.cancel();
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Vibrator v = (Vibrator) this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -154,12 +166,14 @@ public class MainActivityOTP extends AppCompatActivity {
 
                 OtpModel model = OtpModel.GetOTBContract(result);
 
-                toast("Ricevuto: " + model.test());
                 //encrypt
+                String key =RSAManager.GetInstance(null).Decrypt(DBHelper.getInstance(null).readAESKey());
+                model.setSecret(AesEncryption.Encrypt(key, model.getSecret()));
+                (new DbManager()).Save(model);
 
-                //save in the database
-
-                //start generating TOTP
+                timer.cancel();
+                refreshEntries();
+                restart();
             }
         }
     }

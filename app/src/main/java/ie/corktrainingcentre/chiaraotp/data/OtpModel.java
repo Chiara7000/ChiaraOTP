@@ -37,7 +37,8 @@ public final class OtpModel implements BaseColumns{
             c.interval = mainObject.getInt("Interval");
             c.digits = mainObject.getInt("Digits");
             c.apiUrl = mainObject.getString("TimeApi");
-            //c.type = mainObject.getString("Type");
+            c.offset = 0;
+            //c.type = "OTP";
         }
         catch(Exception e)
         {
@@ -96,12 +97,4 @@ public final class OtpModel implements BaseColumns{
         apiUrl=value;
     }
 
-    public String setEncriptSecret (){
-        return AesEncryption.Encrypt(getSecret(),"booooo");
-    }
-
-
-    public String test(){
-        return "Secret:"+this.getSecret();
-    }
 }
