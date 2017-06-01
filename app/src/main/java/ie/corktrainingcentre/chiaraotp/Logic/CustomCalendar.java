@@ -1,4 +1,4 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Logic;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +18,6 @@ public class CustomCalendar implements ICalendar {
     public void setOffsetSeconds(int offsetSeconds) {
         this.offsetSeconds = offsetSeconds;
     }
-
 
     public Date getDate(){
         Calendar c = Calendar.getInstance();

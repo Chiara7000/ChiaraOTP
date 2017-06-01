@@ -3,11 +3,9 @@ package ie.corktrainingcentre.chiaraotp.data;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import ie.corktrainingcentre.chiaraotp.Encryption.AesEncryption;
-import ie.corktrainingcentre.chiaraotp.MainActivityOTP;
+import ie.corktrainingcentre.chiaraotp.Activities.MainActivityOTP;
 
 
 public final class OtpModel implements BaseColumns{

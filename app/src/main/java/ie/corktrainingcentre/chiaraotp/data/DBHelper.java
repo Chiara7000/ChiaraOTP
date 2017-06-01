@@ -3,7 +3,6 @@ package ie.corktrainingcentre.chiaraotp.data;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -11,11 +10,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ie.corktrainingcentre.chiaraotp.Helper.Constants;
-import ie.corktrainingcentre.chiaraotp.Helper.RandomString;
+import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
+import ie.corktrainingcentre.chiaraotp.Helpers.RandomString;
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class DBHelper extends SQLiteOpenHelper {
 

@@ -1,4 +1,4 @@
-package ie.corktrainingcentre.chiaraotp.Helper;
+package ie.corktrainingcentre.chiaraotp.Helpers;
 
 import java.util.Random;
 

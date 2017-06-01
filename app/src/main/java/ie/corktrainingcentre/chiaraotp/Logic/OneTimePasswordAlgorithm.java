@@ -1,17 +1,13 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Logic;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import static android.R.attr.digits;
-import static android.os.Build.VERSION_CODES.M;
+import ie.corktrainingcentre.chiaraotp.Logic.ICalendar;
 
 /**
  * Created by Chiara on 28/05/2017.

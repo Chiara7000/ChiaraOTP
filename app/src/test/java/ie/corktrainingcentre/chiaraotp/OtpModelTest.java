@@ -1,14 +1,7 @@
 package ie.corktrainingcentre.chiaraotp;
 
-import android.util.Log;
-
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import java.util.Random;
 
-import ie.corktrainingcentre.chiaraotp.Helper.RandomString;
 import ie.corktrainingcentre.chiaraotp.data.OtpModel;
 
 import static org.junit.Assert.assertTrue;

@@ -1,18 +1,15 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
         import android.content.pm.PackageManager;
         import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
 
-        import com.google.android.gms.common.api.CommonStatusCodes;
-        import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.CameraSource;
         import com.google.android.gms.vision.Detector;
         import com.google.android.gms.vision.barcode.Barcode;
         import com.google.android.gms.vision.barcode.BarcodeDetector;
@@ -21,11 +18,13 @@ import android.util.Log;
 import android.util.SparseArray;
         import android.view.SurfaceHolder;
         import android.view.SurfaceView;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+
+import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
+import ie.corktrainingcentre.chiaraotp.R;
 
 public class ScannerActivity extends AppCompatActivity {
 
@@ -52,6 +51,21 @@ public class ScannerActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(ScannerActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(ScannerActivity.this,new String[]{Manifest.permission.CAMERA},0x000000);
+            return;
+        }
+
+        if(Constants.BYPASS_CAMERA)
+        {
+            String res = "{\"Secret\":\"ac2ca6cf-2848-4124-aa13-bfb6783c7d0f\",\"AppName\":\"TestApp\",\"Interval\":30,\"Digits\":6,\"TimeApi\":\"https://localhost:5000/Api/Time\",\"Type\":\"TOTP\"}";
+
+            Bundle data = new Bundle();
+            data.putString("code",res);
+
+            Intent inte = new Intent();
+            inte.putExtras(data);
+
+            setResult(Activity.RESULT_OK, inte);
+            finish();
             return;
         }
 

@@ -1,10 +1,10 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Logic;
 
-import android.app.Fragment;
-
-import java.util.Calendar;
-
+import ie.corktrainingcentre.chiaraotp.Activities.MainActivityOTP;
 import ie.corktrainingcentre.chiaraotp.Fragments.OtpFragment;
+import ie.corktrainingcentre.chiaraotp.Logic.CustomCalendar;
+import ie.corktrainingcentre.chiaraotp.Logic.ICalendar;
+import ie.corktrainingcentre.chiaraotp.Logic.OneTimePasswordAlgorithm;
 
 /**
  * Created by Chiara on 29/05/2017.
@@ -20,41 +20,46 @@ public class OtpEntry {
     private int offSet;
     private MainActivityOTP parent=null;
     private int id=0;
+    private int interval = 30;
 
     public OtpEntry(){
         customClock = new CustomCalendar();
         otp = new OneTimePasswordAlgorithm(customClock);
     }
 
+    public int GetRemainingSeconds()
+    {
+        int sec = this.customClock.getSeconds();
+
+        while(sec>interval)
+            sec-=interval;
+
+        return (interval-sec)==interval?interval:interval-sec;
+    }
+
+    public void setInterval(int interval)
+    {
+        if(interval>60) interval = 60;
+        if(interval<20) interval = 20;
+
+        this.interval = interval;
+    }
+
     public MainActivityOTP getParent() {
         return this.parent;
     }
+
     public void setParent(MainActivityOTP mainAct) {
         this.parent = mainAct;
     }
 
-    private ICalendar getCustomClock() {
-        return customClock;
-    }
-
-    private void setCustomClock(ICalendar customClock) {
-        this.customClock = customClock;
-    }
-
-    private int getOffSet() {
-        return offSet;
-    }
-
     public void setOffSet(int offSet) {
         this.offSet = offSet;
+        customClock.setOffsetSeconds(this.offSet);
     }
 
     public String getOtp (){
         return otp.generateOTP(getSecret());
-    }
-
-    private String getSecret() {
-        return secret;
     }
 
     public int getId() {
@@ -87,4 +92,19 @@ public class OtpEntry {
     }
 
 
+    private ICalendar getCustomClock() {
+        return customClock;
+    }
+
+    private void setCustomClock(ICalendar customClock) {
+        this.customClock = customClock;
+    }
+
+    private int getOffSet() {
+        return offSet;
+    }
+
+    private String getSecret() {
+        return secret;
+    }
 }

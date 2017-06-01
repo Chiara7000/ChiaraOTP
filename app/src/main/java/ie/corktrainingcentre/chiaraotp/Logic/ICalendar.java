@@ -1,4 +1,4 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Logic;
 
 import java.util.Date;
 
@@ -8,6 +8,7 @@ import java.util.Date;
 
 public interface ICalendar {
 
+    public void setOffsetSeconds(int offsetSeconds);
     public Date getDate();
     public int getSeconds();
 }

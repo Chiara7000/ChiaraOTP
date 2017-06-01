@@ -1,6 +1,5 @@
 package ie.corktrainingcentre.chiaraotp.data;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -12,7 +11,6 @@ import java.util.List;
 
 import ie.corktrainingcentre.chiaraotp.Encryption.AesEncryption;
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
-import ie.corktrainingcentre.chiaraotp.Helper.Constants;
 
 public class DbManager {
 

@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.util.Random;
 
-import ie.corktrainingcentre.chiaraotp.Helper.RandomString;
+import ie.corktrainingcentre.chiaraotp.Helpers.RandomString;
 
 import static org.junit.Assert.*;
 

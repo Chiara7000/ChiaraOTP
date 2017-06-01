@@ -21,8 +21,8 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.security.auth.x500.X500Principal;
 
-import ie.corktrainingcentre.chiaraotp.Helper.Constants;
-import ie.corktrainingcentre.chiaraotp.MainActivityOTP;
+import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
+import ie.corktrainingcentre.chiaraotp.Activities.MainActivityOTP;
 
 /**
  * Created by Chiara on 21/05/2017.

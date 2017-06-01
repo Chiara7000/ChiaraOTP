@@ -1,4 +1,4 @@
-package ie.corktrainingcentre.chiaraotp;
+package ie.corktrainingcentre.chiaraotp.Activities;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,22 +19,19 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 import ie.corktrainingcentre.chiaraotp.Encryption.AesEncryption;
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
 import ie.corktrainingcentre.chiaraotp.Fragments.OtpFragment;
-import ie.corktrainingcentre.chiaraotp.Helper.Constants;
-import ie.corktrainingcentre.chiaraotp.Helper.RandomString;
-import ie.corktrainingcentre.chiaraotp.Helper.TestRecords;
+import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
+import ie.corktrainingcentre.chiaraotp.Helpers.TestRecords;
+import ie.corktrainingcentre.chiaraotp.Logic.OtpEntry;
+import ie.corktrainingcentre.chiaraotp.R;
 import ie.corktrainingcentre.chiaraotp.data.DBHelper;
 import ie.corktrainingcentre.chiaraotp.data.DbManager;
 import ie.corktrainingcentre.chiaraotp.data.OtpModel;
-
-import static ie.corktrainingcentre.chiaraotp.R.id.otp;
 
 public class MainActivityOTP extends AppCompatActivity {
     public List<OtpEntry> list = new ArrayList<OtpEntry>();
@@ -82,6 +80,8 @@ public class MainActivityOTP extends AppCompatActivity {
 
     public void refreshEntries(){
 
+        Log.i("refreshEntries","start");
+
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         //remove previous fragments
@@ -89,6 +89,8 @@ public class MainActivityOTP extends AppCompatActivity {
             otp.getFragment();
             transaction.remove(otp.getFragment());
         }
+
+        list.clear();
 
         DbManager m=new DbManager();
         for (OtpModel otp : m.ReadAll())
@@ -101,6 +103,7 @@ public class MainActivityOTP extends AppCompatActivity {
             o.setParent(this);
             o.setId(otp.getId());
             o.setOffSet(otp.getOffset());
+            o.setInterval(otp.getInterval());
 
             list.add(o);
             transaction.add(R.id.otpContainer, t);
@@ -110,6 +113,12 @@ public class MainActivityOTP extends AppCompatActivity {
     }
 
     public void restart(){
+        Log.i("restart","timer start");
+
+        if(timer!=null) {
+            timer.cancel();
+            timer = null;
+        }
         timer = new Timer();
         TimerTask t = new TimerTask() {
             int sec = 0;
@@ -117,17 +126,15 @@ public class MainActivityOTP extends AppCompatActivity {
             @Override
             public void run() {
 
+                Log.i("restart","refresh");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        Random r = new Random ();
-
                         for (OtpEntry o : list) {
-
                             o.getFragment().setOtp(o.getOtp());
                             o.getFragment().setAppName(o.getAppName());
-                            o.getFragment().setTime(r.nextInt(30)+1);
+                            o.getFragment().setTime(o.GetRemainingSeconds());
                         }
                     }
                 });
@@ -142,11 +149,13 @@ public class MainActivityOTP extends AppCompatActivity {
     }
 
     protected void onResume(){
+        Log.i("","onResume start");
         super.onResume();
         restart();
     }
 
     protected void onPause(){
+        Log.i("","onPause start");
         super.onPause();
         timer.cancel();
     }
@@ -161,6 +170,9 @@ public class MainActivityOTP extends AppCompatActivity {
         if (requestCode == 1) {
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK) {
+
+                Log.i("","back from the camera");
+
                 Bundle res = data.getExtras();
                 String result = res.getString("code");
 
@@ -171,6 +183,7 @@ public class MainActivityOTP extends AppCompatActivity {
                 model.setSecret(AesEncryption.Encrypt(key, model.getSecret()));
                 (new DbManager()).Save(model);
 
+                Log.i("","new entry saved");
                 timer.cancel();
                 refreshEntries();
                 restart();

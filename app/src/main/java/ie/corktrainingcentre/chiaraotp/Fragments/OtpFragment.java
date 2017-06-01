@@ -1,21 +1,16 @@
 package ie.corktrainingcentre.chiaraotp.Fragments;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 
-import ie.corktrainingcentre.chiaraotp.OtpEntry;
+import ie.corktrainingcentre.chiaraotp.Logic.OtpEntry;
 import ie.corktrainingcentre.chiaraotp.R;
 
 /**

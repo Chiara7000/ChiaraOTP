@@ -10,8 +10,8 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import ie.corktrainingcentre.chiaraotp.Helper.Constants;
-import ie.corktrainingcentre.chiaraotp.MainActivityOTP;
+import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
+import ie.corktrainingcentre.chiaraotp.Activities.MainActivityOTP;
 
 
 /**
