@@ -28,11 +28,12 @@ public class TestRecords {
             m.setAppName("Company " + Integer.toString(i));
             m.setSecret(AesEncryption.Encrypt(key,UUID.randomUUID().toString()));
             m.setDigits(6);
-            m.setApiUrl("www.something.com/api");
+            m.setApiUrl("http://192.168.1.6:81/api/time");
             m.setInterval(30);
             m.setOffset(r.nextInt(10)-5);
 
             db.Save(m);
+
         }
     }
 }

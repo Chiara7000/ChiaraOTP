@@ -35,7 +35,7 @@ public class RSAManager {
     private Context c;
     private static RSAManager instance=null;
     private static Object locker=new Object();
-    private RSAManager(){}
+    public RSAManager(){}
 
     public static RSAManager GetInstance(Context c) {
         try {

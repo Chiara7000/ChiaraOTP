@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -23,6 +26,7 @@ public class OtpFragment extends Fragment implements View.OnTouchListener{
     private int idAppName = 0;
     private int idTime = 0;
     private int idOTP = 0;
+    private int idBar = 0;
     private View localCopy=null;
     private OtpEntry entry=null;
 
@@ -39,6 +43,16 @@ public class OtpFragment extends Fragment implements View.OnTouchListener{
         t.setText(otp);
     }
 
+    public void setBarMax(int max) {
+        ProgressBar bar = ((ProgressBar) this.getView().findViewById(this.idBar));
+        bar.setMax(max);
+    }
+
+    public void setBar(int value) {
+        ProgressBar bar = ((ProgressBar)this.getView().findViewById(this.idBar));
+        bar.setProgress(value);
+    }
+
     public void setTime(int time) {
         TextView t = ((TextView)this.getView().findViewById(this.idTime));
         t.setText(Integer.toString(time));
@@ -53,6 +67,14 @@ public class OtpFragment extends Fragment implements View.OnTouchListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
         View temp = inflater.inflate(R.layout.otp_fragment,container, false);
+
+        ProgressBar pb = (ProgressBar) temp.findViewById(R.id.progressBarToday);
+        this.idBar = View.generateViewId();
+        pb.setId(this.idBar);
+
+        //Animation an = new RotateAnimation(0.0f, 90.0f, 250f, 273f);
+        //an.setFillAfter(true);
+        //pb.startAnimation(an);
 
         TextView otpTextView = (TextView)temp.findViewById(R.id.otp);
         this.idOTP = View.generateViewId();
@@ -76,6 +98,7 @@ public class OtpFragment extends Fragment implements View.OnTouchListener{
         otpTextView.setOnTouchListener(this);
         timeTextView.setOnTouchListener(this);
         appNameTextView.setOnTouchListener(this);
+        pb.setOnTouchListener(this);
 
        /* temp.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {

@@ -54,44 +54,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return DBHelper.dbInstance;
     }
 
-    private static boolean doesDatabaseExist(Context context) {
-        File dbFile = context.getApplicationContext().getDatabasePath(DATABASE_NAME);
-        return dbFile.exists();
-    }
-
-    private DBHelper ()
-    {
-        super(DBHelper.appContext, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-    private static void CreateTables()
-    {
-        SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
-
-        db.execSQL(TABLE_OTP_CREATE);
-        db.execSQL(TABLE_OTP_CONFIGS);
-
-        //only if there is no key in the database
-        if(!CheckKeyExists())
-            CreateNewKey();
-    }
-
-    private static Boolean CheckKeyExists(){
-
-        SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM CONFIGS WHERE KEY=?", new String[]{ Constants.DATABASE_KEY_NAME });
-
-        if(!cursor.moveToFirst())
-        {
-            cursor.close();
-            return false;
-        }
-
-        int count = cursor.getInt(0);
-        cursor.close();
-        return count > 0;
-    }
-
     public static String readAESKey(){
 
         SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
@@ -108,7 +70,117 @@ public class DBHelper extends SQLiteOpenHelper {
         return v;
     }
 
-    private static void CreateNewKey()
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if(Constants.DEBUG){
+
+            //TODO: EXPORT DATA, TO RE-IMPORT AFTER THE NEW STRUCTURE IS IN PLACE
+
+            db.execSQL("DROP TABLE IF EXISTS OTP");
+            db.execSQL("DROP TABLE IF EXISTS CONFIGS");
+        }
+    }
+
+    public static String readSalt(){
+
+        SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT VALUE FROM CONFIGS WHERE KEY=?", new String[]{ Constants.SALTKEY });
+
+        if(!cursor.moveToFirst())
+        {
+            cursor.close();
+            return null;
+        }
+
+        String v = cursor.getString(0);
+        cursor.close();
+        return v;
+    }
+
+    public static String readCipherKey(){
+
+        SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT VALUE FROM CONFIGS WHERE KEY=?", new String[]{ Constants.CIPHERKEY });
+
+        if(!cursor.moveToFirst())
+        {
+            cursor.close();
+            return null;
+        }
+
+        String v = cursor.getString(0);
+        cursor.close();
+        return v;
+    }
+
+    private static void createCipherKey()
+    {
+        SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
+        List<String> pars = new ArrayList<String>();
+        String tempKey = RandomString.RandomString(30);
+        RSAManager rsa = RSAManager.GetInstance(null);
+
+        pars.add(Constants.CIPHERKEY);
+        pars.add(rsa.Encrypt(tempKey));
+
+        try {
+            db.execSQL("INSERT INTO CONFIGS(KEY,VALUE) VALUES(?,?)", pars.toArray());
+        }
+        catch(Exception e)
+        {
+            Log.e("DBHelper",e.getMessage());
+        }
+        finally{
+            if(db.isOpen())
+                db.close();
+        }
+    }
+
+    private static void createSalt()
+    {
+        SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
+        List<String> pars = new ArrayList<String>();
+        String tempKey = RandomString.RandomString(30);
+        RSAManager rsa = RSAManager.GetInstance(null);
+
+        pars.add(Constants.SALTKEY);
+        pars.add(rsa.Encrypt(tempKey));
+
+        try {
+            db.execSQL("INSERT INTO CONFIGS(KEY,VALUE) VALUES(?,?)", pars.toArray());
+        }
+        catch(Exception e)
+        {
+            Log.e("DBHelper",e.getMessage());
+        }
+        finally{
+            if(db.isOpen())
+                db.close();
+        }
+    }
+
+    private static Boolean CheckAESKeyExists(){
+
+        SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM CONFIGS WHERE KEY=?", new String[]{ Constants.DATABASE_KEY_NAME });
+
+        if(!cursor.moveToFirst())
+        {
+            cursor.close();
+            return false;
+        }
+
+        int count = cursor.getInt(0);
+        cursor.close();
+        return count > 0;
+    }
+
+    private static void CreateNewAESKey()
     {
         SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
         List<String> pars = new ArrayList<String>();
@@ -131,19 +203,24 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-
+    private DBHelper ()
+    {
+        super(DBHelper.appContext, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(Constants.DEBUG){
+    private static void CreateTables()
+    {
+        SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
 
-            //TODO: EXPORT DATA, TO RE-IMPORT AFTER THE NEW STRUCTURE IS IN PLACE
+        db.execSQL(TABLE_OTP_CREATE);
+        db.execSQL(TABLE_OTP_CONFIGS);
 
-            db.execSQL("DROP TABLE IF EXISTS OTP");
-            db.execSQL("DROP TABLE IF EXISTS CONFIGS");
+        //only if there is no key in the database
+        if(!CheckAESKeyExists()) {
+            CreateNewAESKey();
+            createSalt();
+            createCipherKey();
         }
     }
+
 }

@@ -69,7 +69,7 @@ public class PopUp extends DialogFragment implements View.OnClickListener{
         noButton.setOnClickListener(this);
         setCancelable(false);
 
-        //getDialog().setTitle("Simple Dialog");
+        getDialog().setTitle("Confirmation");
         return rootView;
     }
 

@@ -12,6 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
 import ie.corktrainingcentre.chiaraotp.Activities.MainActivityOTP;
+import ie.corktrainingcentre.chiaraotp.data.DBHelper;
 
 
 /**
@@ -22,11 +23,20 @@ public class AesEncryption {
 
     private static final String TAG = MainActivityOTP.class.getName();
 
+    private static String getSalt(){
+        RSAManager rsa = new RSAManager();
+        return rsa.Decrypt(DBHelper.readSalt());
+    }
+
+    private static String getCipherKey(){
+        RSAManager rsa = new RSAManager();
+        return rsa.Decrypt(DBHelper.readCipherKey());
+    }
+
     public static void Init()
     {
 
     }
-
 
     public static String Encrypt(String password, String clearText){
         String ret = null;
@@ -36,7 +46,7 @@ public class AesEncryption {
             SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
             Cipher cipher = Cipher.getInstance(Constants.CIPHER_ALG);
 
-            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(GetAESArray(Constants.CIPHER_ALG)));
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(GetAESArray(getCipherKey())));
             byte[] encrypted = cipher.doFinal(clear);
             ret = new String(Base64.encode(encrypted,Base64.DEFAULT));
         }
@@ -54,7 +64,7 @@ public class AesEncryption {
             byte[] raw = GetKey(password);
             SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
             Cipher cipher = Cipher.getInstance(Constants.CIPHER_ALG);
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(GetAESArray(Constants.CIPHER_ALG)));
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(GetAESArray(getCipherKey())));
             byte[] decrypted = cipher.doFinal(encrypted);
             ret = new String(decrypted);
         }
@@ -74,14 +84,7 @@ public class AesEncryption {
     private static byte[] GetKey(String password) throws Exception{
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         digest.reset();
-        return digest.digest((password+Constants.SALT).getBytes());
+        return digest.digest((password+getSalt()).getBytes());
     }
 
-    public static void Test() throws Exception{
-        String password = UUID.randomUUID().toString();
-// encrypt
-        String encryptedData = Encrypt(password,"something");
-// decrypt
-        String exit = Decrypt(password,encryptedData);
-    }
 }

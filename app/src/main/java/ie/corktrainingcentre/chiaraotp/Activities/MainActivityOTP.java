@@ -26,6 +26,7 @@ import ie.corktrainingcentre.chiaraotp.Encryption.AesEncryption;
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
 import ie.corktrainingcentre.chiaraotp.Fragments.OtpFragment;
 import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
+import ie.corktrainingcentre.chiaraotp.Helpers.SynchroApiHelper;
 import ie.corktrainingcentre.chiaraotp.Helpers.TestRecords;
 import ie.corktrainingcentre.chiaraotp.Logic.OtpEntry;
 import ie.corktrainingcentre.chiaraotp.R;
@@ -75,6 +76,9 @@ public class MainActivityOTP extends AppCompatActivity {
 
         refreshEntries();
 
+
+        SynchroApiHelper.callApi();
+
         init();
     }
 
@@ -105,6 +109,7 @@ public class MainActivityOTP extends AppCompatActivity {
             o.setOffSet(otp.getOffset());
             o.setInterval(otp.getInterval());
 
+            //o.getFragment()
             list.add(o);
             transaction.add(R.id.otpContainer, t);
         }
@@ -113,6 +118,7 @@ public class MainActivityOTP extends AppCompatActivity {
     }
 
     public void restart(){
+
         Log.i("restart","timer start");
 
         if(timer!=null) {
@@ -135,6 +141,9 @@ public class MainActivityOTP extends AppCompatActivity {
                             o.getFragment().setOtp(o.getOtp());
                             o.getFragment().setAppName(o.getAppName());
                             o.getFragment().setTime(o.GetRemainingSeconds());
+                            o.getFragment().setBarMax(30);
+                            o.getFragment().setBar(o.GetRemainingSeconds());
+
                         }
                     }
                 });
