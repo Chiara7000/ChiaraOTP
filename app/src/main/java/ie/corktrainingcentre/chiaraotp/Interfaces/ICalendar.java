@@ -1,4 +1,4 @@
-package ie.corktrainingcentre.chiaraotp.Logic;
+package ie.corktrainingcentre.chiaraotp.Interfaces;
 
 import java.util.Date;
 

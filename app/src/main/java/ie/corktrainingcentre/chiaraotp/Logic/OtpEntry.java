@@ -2,9 +2,7 @@ package ie.corktrainingcentre.chiaraotp.Logic;
 
 import ie.corktrainingcentre.chiaraotp.Activities.MainActivityOTP;
 import ie.corktrainingcentre.chiaraotp.Fragments.OtpFragment;
-import ie.corktrainingcentre.chiaraotp.Logic.CustomCalendar;
-import ie.corktrainingcentre.chiaraotp.Logic.ICalendar;
-import ie.corktrainingcentre.chiaraotp.Logic.OneTimePasswordAlgorithm;
+import ie.corktrainingcentre.chiaraotp.Interfaces.ICalendar;
 
 /**
  * Created by Chiara on 29/05/2017.

@@ -3,6 +3,8 @@ package ie.corktrainingcentre.chiaraotp.Logic;
 import java.util.Calendar;
 import java.util.Date;
 
+import ie.corktrainingcentre.chiaraotp.Interfaces.ICalendar;
+
 /**
  * Created by Chiara on 29/05/2017.
  */

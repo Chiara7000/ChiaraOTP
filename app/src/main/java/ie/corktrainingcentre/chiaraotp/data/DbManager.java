@@ -74,6 +74,10 @@ public class DbManager {
         try {
             db.execSQL(query, pars2.toArray());
         }
+        catch(Exception e)
+        {
+            Log.e("",e.getMessage());
+        }
         finally{
             if(db.isOpen())
                 db.close();

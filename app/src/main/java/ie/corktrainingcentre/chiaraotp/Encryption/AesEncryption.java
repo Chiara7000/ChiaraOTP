@@ -24,12 +24,12 @@ public class AesEncryption {
     private static final String TAG = MainActivityOTP.class.getName();
 
     private static String getSalt(){
-        RSAManager rsa = new RSAManager();
+        RSAManager rsa = RSAManager.GetInstance(null);
         return rsa.Decrypt(DBHelper.readSalt());
     }
 
     private static String getCipherKey(){
-        RSAManager rsa = new RSAManager();
+        RSAManager rsa = RSAManager.GetInstance(null);
         return rsa.Decrypt(DBHelper.readCipherKey());
     }
 

@@ -4,6 +4,9 @@ package ie.corktrainingcentre.chiaraotp.Helpers;
  * Created by Chiara on 21/05/2017.
  */
 public class Constants {
+    public final static int DATABASE_VERSION = 2;
+    public final static String DATABASE_NAME = "otp.db";
+
     public final static String CIPHER_ALG = "AES/CBC/PKCS5Padding";
     public final static String APP_NAME = "ChiaraOTP";
 
@@ -15,7 +18,6 @@ public class Constants {
     public final static String RSA_MODE =  "RSA/ECB/PKCS1Padding";
 
     public final static boolean DEBUG = true;
-
     public final static boolean BYPASS_CAMERA = false;
 
 }

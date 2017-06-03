@@ -14,10 +14,10 @@ import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
 import ie.corktrainingcentre.chiaraotp.Helpers.RandomString;
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
 
-public class DBHelper extends SQLiteOpenHelper {
+import static android.content.Context.MODE_PRIVATE;
+import static ie.corktrainingcentre.chiaraotp.Helpers.Constants.DATABASE_NAME;
 
-    private static final int DATABASE_VERSION = 10;
-    private static final String DATABASE_NAME = "otp.db";
+public class DBHelper extends SQLiteOpenHelper {
 
     private static Context appContext = null;
     private static DBHelper dbInstance = null;
@@ -46,8 +46,8 @@ public class DBHelper extends SQLiteOpenHelper {
             DBHelper.appContext = context.getApplicationContext();
             DBHelper.dbInstance = new DBHelper();
 
-            SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
-            db.close();
+           // SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
+           // db.close();
 
             CreateTables();
         }
@@ -77,13 +77,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(Constants.DEBUG){
 
             //TODO: EXPORT DATA, TO RE-IMPORT AFTER THE NEW STRUCTURE IS IN PLACE
 
             db.execSQL("DROP TABLE IF EXISTS OTP");
             db.execSQL("DROP TABLE IF EXISTS CONFIGS");
-        }
+
     }
 
     public static String readSalt(){
@@ -205,12 +204,23 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private DBHelper ()
     {
-        super(DBHelper.appContext, DATABASE_NAME, null, DATABASE_VERSION);
+        super(DBHelper.appContext, DATABASE_NAME, null, Constants.DATABASE_VERSION);
     }
 
     private static void CreateTables()
     {
+        //DBHelper.appContext.getApplicationContext().deleteDatabase(DATABASE_NAME);
+        //DBHelper.appContext.getApplicationContext().openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+
         SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
+
+        if(Constants.DEBUG){
+
+            //TODO: EXPORT DATA, TO RE-IMPORT AFTER THE NEW STRUCTURE IS IN PLACE
+
+            db.execSQL("DROP TABLE IF EXISTS OTP");
+            db.execSQL("DROP TABLE IF EXISTS CONFIGS");
+        }
 
         db.execSQL(TABLE_OTP_CREATE);
         db.execSQL(TABLE_OTP_CONFIGS);
@@ -222,5 +232,4 @@ public class DBHelper extends SQLiteOpenHelper {
             createCipherKey();
         }
     }
-
 }

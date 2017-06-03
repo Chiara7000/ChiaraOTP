@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import ie.corktrainingcentre.chiaraotp.Logic.ICalendar;
+import ie.corktrainingcentre.chiaraotp.Interfaces.ICalendar;
 
 /**
  * Created by Chiara on 28/05/2017.

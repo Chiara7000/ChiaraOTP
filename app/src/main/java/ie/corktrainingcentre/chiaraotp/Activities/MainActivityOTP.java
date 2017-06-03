@@ -28,6 +28,7 @@ import ie.corktrainingcentre.chiaraotp.Fragments.OtpFragment;
 import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
 import ie.corktrainingcentre.chiaraotp.Helpers.SynchroApiHelper;
 import ie.corktrainingcentre.chiaraotp.Helpers.TestRecords;
+import ie.corktrainingcentre.chiaraotp.Interfaces.ITaskDoneListener;
 import ie.corktrainingcentre.chiaraotp.Logic.OtpEntry;
 import ie.corktrainingcentre.chiaraotp.R;
 import ie.corktrainingcentre.chiaraotp.data.DBHelper;
@@ -76,8 +77,14 @@ public class MainActivityOTP extends AppCompatActivity {
 
         refreshEntries();
 
-
-        SynchroApiHelper.callApi();
+        new SynchroApiHelper(new ITaskDoneListener(){
+            public void success(int response){
+                toast(Integer.toString(response));
+            }
+            public void error(){
+                toast("an error occurred");
+            }
+        }).execute("http://192.168.1.6:81/api/time");
 
         init();
     }
