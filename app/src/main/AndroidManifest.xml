@@ -28,7 +28,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Activities.ScannerActivity"></activity>
+        <activity android:name=".Activities.ScannerActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
