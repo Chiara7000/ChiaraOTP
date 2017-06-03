@@ -56,7 +56,7 @@ public class ScannerActivity extends AppCompatActivity {
 
         if(Constants.BYPASS_CAMERA)
         {
-            String res = "{\"Secret\":\"ac2ca6cf-2848-4124-aa13-bfb6783c7d0f\",\"AppName\":\"TestApp\",\"Interval\":30,\"Digits\":6,\"TimeApi\":\"https://localhost:5000/Api/Time\",\"Type\":\"TOTP\"}";
+            String res = "{\"Secret\":\"505ac90f-4b9f-412b-9132-d9eb0f9b2521\",\"AppName\":\"TestApp\",\"Interval\":30,\"Digits\":6,\"TimeApi\":\"http://192.168.1.6:81/Api/Time\",\"Type\":\"TOTP\"}";
 
             Bundle data = new Bundle();
             data.putString("code",res);
@@ -68,64 +68,64 @@ public class ScannerActivity extends AppCompatActivity {
             finish();
             return;
         }
+        else {
+            barcodeDetector = new BarcodeDetector.Builder(this).setBarcodeFormats(Barcode.QR_CODE).build();
 
-        barcodeDetector = new BarcodeDetector.Builder(this).setBarcodeFormats(Barcode.QR_CODE).build();
+            cameraSource = new CameraSource.Builder(this, barcodeDetector)
+                    .setAutoFocusEnabled(true)
+                    .setRequestedPreviewSize(300, 300)
+                    .build();
 
-        cameraSource = new CameraSource.Builder(this, barcodeDetector)
-                                       .setAutoFocusEnabled(true)
-                                       .setRequestedPreviewSize(300, 300)
-                                       .build();
+            cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
 
-        cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(SurfaceHolder holder) {
 
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-
-                try {
-                    cameraSource.start(cameraPreview.getHolder());
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to to start the camera", e);
+                    try {
+                        cameraSource.start(cameraPreview.getHolder());
+                    } catch (IOException e) {
+                        Log.e(TAG, "Failed to to start the camera", e);
+                    }
                 }
-            }
 
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
+                @Override
+                public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder){
-                cameraSource.stop();
-            }
-        });
-
-        barcodeDetector.setProcessor(new Detector.Processor<Barcode>(){
-
-            @Override
-            public void release(){
-
-            }
-
-            @Override
-            public void receiveDetections (Detector.Detections<Barcode>detections){
-
-                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
-
-                if(barcodes.size()!= 0)
-                {
-                    String res = barcodes.valueAt(0).displayValue;
-
-                    Bundle data = new Bundle();
-                    data.putString("code",res);
-
-                    Intent inte = new Intent();
-                    inte.putExtras(data);
-
-                    setResult(Activity.RESULT_OK, inte);
-                    finish();
                 }
-            }
-        });
+
+                @Override
+                public void surfaceDestroyed(SurfaceHolder holder) {
+                    cameraSource.stop();
+                }
+            });
+
+            barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
+
+                @Override
+                public void release() {
+
+                }
+
+                @Override
+                public void receiveDetections(Detector.Detections<Barcode> detections) {
+
+                    final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+
+                    if (barcodes.size() != 0) {
+                        String res = barcodes.valueAt(0).displayValue;
+
+                        Bundle data = new Bundle();
+                        data.putString("code", res);
+
+                        Intent inte = new Intent();
+                        inte.putExtras(data);
+
+                        setResult(Activity.RESULT_OK, inte);
+                        finish();
+                    }
+                }
+            });
+        }
     }
 
     public void toast(String msg){
@@ -140,9 +140,13 @@ public class ScannerActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy(){
+
+        if(cameraSource!=null)
+            cameraSource.release();
+        if(barcodeDetector!=null)
+            barcodeDetector.release();
+
         super.onDestroy();
-        cameraSource.release();
-        barcodeDetector.release();
     }
 
     @Override

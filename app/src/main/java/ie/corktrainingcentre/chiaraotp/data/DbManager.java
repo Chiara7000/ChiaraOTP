@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import ie.corktrainingcentre.chiaraotp.Encryption.AesEncryption;
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
@@ -16,7 +17,8 @@ public class DbManager {
 
     private DBHelper dbHelper;
     private final String InsertOTP = "INSERT INTO OTP(TIMESTAMP,SECRET,INTERVAL,DIGITS,APIURL,TYPE,APPNAME, OFFSET) VALUES(?,?,?,?,?,?,?,?)";
-    private final String UpdateOTP = "UPDATE OTP SET TIMESTAMP=?,SECRET=?,INTERVAL=?,DIGITS=?,APIURL=? WHERE ID=?";
+    private final String UpdateOTP = "UPDATE OTP SET TIMESTAMP=?,SECRET=?,INTERVAL=?,DIGITS=?,APIURL=?,OFFSET=? WHERE ID=?";
+    private final String key =RSAManager.GetInstance(null).Decrypt(DBHelper.getInstance(null).readAESKey());;
 
     public DbManager ()
     {
@@ -45,6 +47,8 @@ public class DbManager {
         return ret;
     }
 
+
+
     public void Save(OtpModel model){
 
         int id = GetAppId(model.getAppName());
@@ -52,7 +56,7 @@ public class DbManager {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         List<String> pars2 = new ArrayList<String>();
         pars2.add(GetUTCdatetimeAsString());
-        pars2.add(model.getSecret());
+        pars2.add(AesEncryption.Encrypt(key, model.getSecret()));
         pars2.add(Integer.toString(model.getInterval()));
         pars2.add(Integer.toString(model.getDigits()));
         pars2.add(model.getApiUrl());
@@ -68,6 +72,7 @@ public class DbManager {
         else
         {
             query = UpdateOTP;
+            pars2.add(Integer.toString(model.getOffset()));
             pars2.add(Integer.toString(id));
         }
 

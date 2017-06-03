@@ -1,5 +1,6 @@
 package ie.corktrainingcentre.chiaraotp.Interfaces;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -8,7 +9,6 @@ import java.util.Date;
 
 public interface ICalendar {
 
-    public void setOffsetSeconds(int offsetSeconds);
-    public Date getDate();
-    public int getSeconds();
+    public void setOffsetMilliseconds(int offsetSeconds);
+    public Calendar getCurrentCalendar();
 }

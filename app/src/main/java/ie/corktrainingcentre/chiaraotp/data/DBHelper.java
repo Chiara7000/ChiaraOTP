@@ -231,5 +231,6 @@ public class DBHelper extends SQLiteOpenHelper {
             createSalt();
             createCipherKey();
         }
+
     }
 }

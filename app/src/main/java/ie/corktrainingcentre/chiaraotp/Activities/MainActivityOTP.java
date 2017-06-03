@@ -29,6 +29,7 @@ import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
 import ie.corktrainingcentre.chiaraotp.Helpers.SynchroApiHelper;
 import ie.corktrainingcentre.chiaraotp.Helpers.TestRecords;
 import ie.corktrainingcentre.chiaraotp.Interfaces.ITaskDoneListener;
+import ie.corktrainingcentre.chiaraotp.Helpers.SynchroResponse;
 import ie.corktrainingcentre.chiaraotp.Logic.OtpEntry;
 import ie.corktrainingcentre.chiaraotp.R;
 import ie.corktrainingcentre.chiaraotp.data.DBHelper;
@@ -48,7 +49,6 @@ public class MainActivityOTP extends AppCompatActivity {
                 Intent app = new Intent(MainActivityOTP.this, ScannerActivity.class);
                 startActivityForResult(app, 1);
             }
-
         });
     }
 
@@ -64,7 +64,7 @@ public class MainActivityOTP extends AppCompatActivity {
         goScanner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Snackbar.make(view, "Main action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
@@ -75,16 +75,9 @@ public class MainActivityOTP extends AppCompatActivity {
         if(Constants.DEBUG)
             TestRecords.InsertTestingRecords();
 
-        refreshEntries();
+        List<OtpModel> records=(new DbManager()).ReadAll();
 
-        new SynchroApiHelper(new ITaskDoneListener(){
-            public void success(int response){
-                toast(Integer.toString(response));
-            }
-            public void error(){
-                toast("an error occurred");
-            }
-        }).execute("http://192.168.1.6:81/api/time");
+        refreshEntries();
 
         init();
     }
@@ -109,19 +102,34 @@ public class MainActivityOTP extends AppCompatActivity {
             OtpFragment t = new OtpFragment();
             OtpEntry o = new OtpEntry();
             o.setFragment(t);
-            o.setAppName(otp.getAppName());
-            o.setSecret(otp.getSecret());
-            o.setParent(this);
-            o.setId(otp.getId());
-            o.setOffSet(otp.getOffset());
-            o.setInterval(otp.getInterval());
 
-            //o.getFragment()
+            o.setParent(this);
+            o.setModel(otp);
+
             list.add(o);
             transaction.add(R.id.otpContainer, t);
         }
 
         transaction.commit();
+
+        for (OtpEntry otp : list) {
+            int id = otp.getId();
+            String url = otp.getApi();
+            new SynchroApiHelper(id, new ITaskDoneListener() {
+                public void success(SynchroResponse response) {
+                    for (OtpEntry oo : list)
+                        if (oo.getId() == response.getId()) {
+                            oo.setOffSet(response.getOffset());
+                            (new DbManager()).Save(oo.getModel());
+                            break;
+                        }
+                }
+                public void error() {
+                    toast("an error occurred");
+                }
+            }).execute(url);
+        }
+
     }
 
     public void restart(){
@@ -150,17 +158,17 @@ public class MainActivityOTP extends AppCompatActivity {
                             o.getFragment().setTime(o.GetRemainingSeconds());
                             o.getFragment().setBarMax(30);
                             o.getFragment().setBar(o.GetRemainingSeconds());
-
                         }
                     }
                 });
             }
         };
-        timer.scheduleAtFixedRate(t, 1000, 1000);
+        timer.scheduleAtFixedRate(t, 0, 500);
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
     }
 
@@ -195,14 +203,11 @@ public class MainActivityOTP extends AppCompatActivity {
                 OtpModel model = OtpModel.GetOTBContract(result);
 
                 //encrypt
-                String key =RSAManager.GetInstance(null).Decrypt(DBHelper.getInstance(null).readAESKey());
-                model.setSecret(AesEncryption.Encrypt(key, model.getSecret()));
                 (new DbManager()).Save(model);
 
                 Log.i("","new entry saved");
                 timer.cancel();
                 refreshEntries();
-                restart();
             }
         }
     }

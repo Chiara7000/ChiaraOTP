@@ -1,8 +1,11 @@
 package ie.corktrainingcentre.chiaraotp.Logic;
 
+import java.util.Calendar;
+
 import ie.corktrainingcentre.chiaraotp.Activities.MainActivityOTP;
 import ie.corktrainingcentre.chiaraotp.Fragments.OtpFragment;
 import ie.corktrainingcentre.chiaraotp.Interfaces.ICalendar;
+import ie.corktrainingcentre.chiaraotp.data.OtpModel;
 
 /**
  * Created by Chiara on 29/05/2017.
@@ -11,23 +14,33 @@ import ie.corktrainingcentre.chiaraotp.Interfaces.ICalendar;
 public class OtpEntry {
 
     private OtpFragment fragment = null;
-    private String appName = "";
-    private String secret = "";
     private OneTimePasswordAlgorithm otp = null;
     private ICalendar customClock;
-    private int offSet;
     private MainActivityOTP parent=null;
-    private int id=0;
     private int interval = 30;
+    private OtpModel model=null;
 
     public OtpEntry(){
         customClock = new CustomCalendar();
         otp = new OneTimePasswordAlgorithm(customClock);
     }
 
+    public String getApi() {
+        return this.model.getApiUrl();
+    }
+
+    public OtpModel getModel() {
+        return model;
+    }
+
+    public void setModel(OtpModel model) {
+        this.model = model;
+        customClock.setOffsetMilliseconds(model.getOffset());
+    }
+
     public int GetRemainingSeconds()
     {
-        int sec = this.customClock.getSeconds();
+        int sec = this.customClock.getCurrentCalendar().get(Calendar.SECOND);
 
         while(sec>interval)
             sec-=interval;
@@ -35,13 +48,6 @@ public class OtpEntry {
         return (interval-sec)==interval?interval:interval-sec;
     }
 
-    public void setInterval(int interval)
-    {
-        if(interval>60) interval = 60;
-        if(interval<20) interval = 20;
-
-        this.interval = interval;
-    }
 
     public MainActivityOTP getParent() {
         return this.parent;
@@ -51,25 +57,13 @@ public class OtpEntry {
         this.parent = mainAct;
     }
 
-    public void setOffSet(int offSet) {
-        this.offSet = offSet;
-        customClock.setOffsetSeconds(this.offSet);
-    }
 
     public String getOtp (){
-        return otp.generateOTP(getSecret());
+        return otp.generateOTP(this.getSecret());
     }
 
     public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
+        return this.getModel().getId();
     }
 
     public OtpFragment getFragment() {
@@ -82,27 +76,19 @@ public class OtpEntry {
     }
 
     public String getAppName() {
-        return appName;
+        return this.getModel().getAppName();
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-
-
-    private ICalendar getCustomClock() {
-        return customClock;
-    }
-
-    private void setCustomClock(ICalendar customClock) {
-        this.customClock = customClock;
+    public void setOffSet(int offSet) {
+        this.getModel().setOffset(offSet);
+        customClock.setOffsetMilliseconds(offSet);
     }
 
     private int getOffSet() {
-        return offSet;
+        return this.getModel().getOffset();
     }
 
     private String getSecret() {
-        return secret;
+        return this.getModel().getSecret();
     }
 }

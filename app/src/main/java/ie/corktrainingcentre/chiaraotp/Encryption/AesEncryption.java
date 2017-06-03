@@ -60,7 +60,7 @@ public class AesEncryption {
     public static String Decrypt(String password, String encryptedText){
         String ret = null;
         try {
-            byte[] encrypted = Base64.decode(encryptedText.getBytes(),Base64.DEFAULT);
+            byte[] encrypted = Base64.decode(encryptedText.getBytes("utf-8"),Base64.DEFAULT);
             byte[] raw = GetKey(password);
             SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
             Cipher cipher = Cipher.getInstance(Constants.CIPHER_ALG);
@@ -78,13 +78,13 @@ public class AesEncryption {
     private static byte[] GetAESArray(String cipherArrayPassword) throws Exception{
         MessageDigest digest = MessageDigest.getInstance("MD5");
         digest.reset();
-        return digest.digest(cipherArrayPassword.getBytes());
+        return digest.digest(cipherArrayPassword.getBytes("utf-8"));
     }
 
     private static byte[] GetKey(String password) throws Exception{
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         digest.reset();
-        return digest.digest((password+getSalt()).getBytes());
+        return digest.digest((password+getSalt()).getBytes("utf-8"));
     }
 
 }

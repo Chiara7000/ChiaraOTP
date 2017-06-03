@@ -17,7 +17,7 @@ public class TestRecords {
 
     public static void InsertTestingRecords()
     {
-        String key =RSAManager.GetInstance(null).Decrypt(DBHelper.getInstance(null).readAESKey());
+
         DbManager db = new DbManager();
         db.DeleteAll();
 
@@ -26,11 +26,12 @@ public class TestRecords {
             Random r=new Random();
             OtpModel m = new OtpModel();
             m.setAppName("Company " + Integer.toString(i));
-            m.setSecret(AesEncryption.Encrypt(key,UUID.randomUUID().toString()));
+            m.setSecret("505ac90f-4b9f-412b-9132-d9eb0f9b2521");//UUID.randomUUID().toString());
+
             m.setDigits(6);
             m.setApiUrl("http://192.168.1.6:81/api/time");
             m.setInterval(30);
-            m.setOffset(r.nextInt(10)-5);
+            m.setOffset(0);
 
             db.Save(m);
 

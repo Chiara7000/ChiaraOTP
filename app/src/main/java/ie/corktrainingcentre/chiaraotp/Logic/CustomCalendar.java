@@ -11,24 +11,19 @@ import ie.corktrainingcentre.chiaraotp.Interfaces.ICalendar;
 
 public class CustomCalendar implements ICalendar {
 
-    int offsetSeconds=15;
+    int offsetMilliseconds=15;
 
-    public int getOffsetSeconds() {
-        return offsetSeconds;
+    public int getOffsetMilliseconds() {
+        return offsetMilliseconds;
     }
 
-    public void setOffsetSeconds(int offsetSeconds) {
-        this.offsetSeconds = offsetSeconds;
+    public void setOffsetMilliseconds(int offsetSeconds) {
+        this.offsetMilliseconds = offsetSeconds;
     }
 
-    public Date getDate(){
+    public Calendar getCurrentCalendar(){
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.SECOND,offsetSeconds);
-        return c.getTime();
-    }
-    public int getSeconds(){
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.SECOND,offsetSeconds);
-        return c.get(Calendar.SECOND);
+        c.add(Calendar.MILLISECOND,offsetMilliseconds);
+        return c;
     }
 }

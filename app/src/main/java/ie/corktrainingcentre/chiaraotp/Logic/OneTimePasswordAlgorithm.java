@@ -3,6 +3,7 @@ package ie.corktrainingcentre.chiaraotp.Logic;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -70,8 +71,10 @@ public class OneTimePasswordAlgorithm {
     {
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd hh:mm:");
         sdf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-        final String utcTime = sdf.format(calendar.getDate());
-        int seconds = calendar.getSeconds()/30;
+
+        Calendar ct=calendar.getCurrentCalendar();
+        final String utcTime = sdf.format(ct.getTime());
+        int seconds = ct.get(Calendar.SECOND)/30;
 
         return utcTime + Integer.toString(seconds);
     }

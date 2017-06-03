@@ -67,7 +67,7 @@ public class RSAManager {
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, inputCipher);
-            cipherOutputStream.write(secret.getBytes());
+            cipherOutputStream.write(secret.getBytes("utf-8"));
             cipherOutputStream.close();
 
             ret = new String(Base64.encode(outputStream.toByteArray(), Base64.DEFAULT));
@@ -82,7 +82,7 @@ public class RSAManager {
 
         String ret = null;
         try {
-            byte[] encrypted = Base64.decode(encr.getBytes(), Base64.DEFAULT);
+            byte[] encrypted = Base64.decode(encr.getBytes("utf-8"), Base64.DEFAULT);
 
             Cipher output = Cipher.getInstance(Constants.RSA_MODE);
 
