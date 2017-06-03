@@ -112,6 +112,11 @@ public class MainActivityOTP extends AppCompatActivity {
 
         transaction.commit();
 
+        SynchronizeWithRemoteServers();
+    }
+
+    private void SynchronizeWithRemoteServers()
+    {
         for (OtpEntry otp : list) {
             int id = otp.getId();
             String url = otp.getApi();
@@ -125,11 +130,10 @@ public class MainActivityOTP extends AppCompatActivity {
                         }
                 }
                 public void error() {
-                    toast("an error occurred");
+                   // toast("an error occurred");
                 }
             }).execute(url);
         }
-
     }
 
     public void restart(){
@@ -156,7 +160,7 @@ public class MainActivityOTP extends AppCompatActivity {
                             o.getFragment().setOtp(o.getOtp());
                             o.getFragment().setAppName(o.getAppName());
                             o.getFragment().setTime(o.GetRemainingSeconds());
-                            o.getFragment().setBarMax(30);
+                            o.getFragment().setBarMax(o.getModel().getInterval());
                             o.getFragment().setBar(o.GetRemainingSeconds());
                         }
                     }
@@ -239,6 +243,7 @@ public class MainActivityOTP extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            SynchronizeWithRemoteServers();
             return true;
         }
 

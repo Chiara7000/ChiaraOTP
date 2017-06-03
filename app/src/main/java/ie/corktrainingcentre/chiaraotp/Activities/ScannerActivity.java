@@ -64,7 +64,8 @@ public class ScannerActivity extends AppCompatActivity {
 
         if(Constants.BYPASS_CAMERA)
         {
-            String res = "{\"Secret\":\"505ac90f-4b9f-412b-9132-d9eb0f9b2521\",\"AppName\":\"TestApp\",\"Interval\":30,\"Digits\":6,\"TimeApi\":\"http://192.168.1.6:81/Api/Time\",\"Type\":\"TOTP\"}";
+            String res = "{\"Secret\":\"505ac90f-4b9f-412b-9132-d9eb0f9b2521\",\"AppName\":\"TestApp\",\"Interval\":20,\"Digits\":5,\"TimeApi\":\"http://192.168.1.6:5000/Api/Time\",\"Type\":\"TOTP\"}";
+//            String res = "{\"Secret\":\"505ac90f-4b9f-412b-9132-d9eb0f9b2521\",\"AppName\":\"TestApp\",\"Interval\":30,\"Digits\":6,\"TimeApi\":\"http://192.168.1.6:81/Api/Time\",\"Type\":\"TOTP\"}";
 
             Bundle data = new Bundle();
             data.putString("code",res);

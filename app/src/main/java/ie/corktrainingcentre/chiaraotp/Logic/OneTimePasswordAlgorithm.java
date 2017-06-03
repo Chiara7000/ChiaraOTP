@@ -33,20 +33,21 @@ public class OneTimePasswordAlgorithm {
         } catch (NoSuchAlgorithmException nsae) {
             hmacSha1 = Mac.getInstance("HMAC-SHA-1");
         }
-        SecretKeySpec macKey =
-                new SecretKeySpec(keyBytes, "RAW");
+        SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
         hmacSha1.init(macKey);
         return hmacSha1.doFinal(text);
     }
 
 
-    public String generateOTP(String secretKey){
+    public String generateOTP(String secretKey, int codeDigits, int interval){
         String result = null;
         try {
         byte[] secret = secretKey.getBytes();
-        int codeDigits = 6;
 
-        byte[] hash = hmac_sha1(secret, GetUTCdatetimeAsString().getBytes());
+        if(codeDigits !=5 && codeDigits!=6) //only valid values
+            codeDigits = 6;
+
+        byte[] hash = hmac_sha1(secret, GetUTCdatetimeAsString(interval).getBytes());
 
         int offset = hash[hash.length - 1] & 0xf;
         int binary =
@@ -67,14 +68,14 @@ public class OneTimePasswordAlgorithm {
         return result;
     }
 
-    private String GetUTCdatetimeAsString()
+    private String GetUTCdatetimeAsString(int interval)
     {
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd hh:mm:");
         sdf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
 
         Calendar ct=calendar.getCurrentCalendar();
         final String utcTime = sdf.format(ct.getTime());
-        int seconds = ct.get(Calendar.SECOND)/30;
+        int seconds = ct.get(Calendar.SECOND)/interval;
 
         return utcTime + Integer.toString(seconds);
     }

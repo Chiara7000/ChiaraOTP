@@ -17,7 +17,7 @@ public class Constants {
     public final static String APPKEY = "ChiaraOTPKey1";  //name of the key in the secure storage
     public final static String RSA_MODE =  "RSA/ECB/PKCS1Padding";
 
-    public final static boolean DEBUG = true;
+    public final static boolean DEBUG = false;
     public final static boolean BYPASS_CAMERA = false;
 
 }

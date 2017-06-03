@@ -36,6 +36,7 @@ public class OtpEntry {
     public void setModel(OtpModel model) {
         this.model = model;
         customClock.setOffsetMilliseconds(model.getOffset());
+        this.interval = model.getInterval();
     }
 
     public int GetRemainingSeconds()
@@ -59,7 +60,7 @@ public class OtpEntry {
 
 
     public String getOtp (){
-        return otp.generateOTP(this.getSecret());
+        return otp.generateOTP(this.getSecret(),this.getModel().getDigits(), this.getModel().getInterval());
     }
 
     public int getId() {
