@@ -18,6 +18,9 @@ import android.util.Log;
 import android.util.SparseArray;
         import android.view.SurfaceHolder;
         import android.view.SurfaceView;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,17 +35,22 @@ public class ScannerActivity extends AppCompatActivity {
     private SurfaceView cameraPreview;
     private CameraSource cameraSource;
     private BarcodeDetector barcodeDetector;
-    private TextView barcodeResult;
 
     private static final int CAMERA_PERMISSION_CAMERA = 0x000000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scanner);
+
+        Box box = new Box(this);
+
+        this.setContentView(R.layout.activity_scanner);
+
+
+        addContentView(box, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
         cameraPreview = (SurfaceView) findViewById(R.id.camera_preview);
-        barcodeResult=(TextView)findViewById(R.id.barcode_result);
+
         createCameraSource();
     }
 
