@@ -103,6 +103,8 @@ public class MainActivityOTP extends AppCompatActivity {
             transaction.remove(otp.getFragment());
         }
 
+        transaction.commit(); //commit all fragments
+
         list.clear();
 
         DbManager m=new DbManager();
@@ -117,10 +119,8 @@ public class MainActivityOTP extends AppCompatActivity {
             o.setModel(otp);
 
             list.add(o);
-            transaction.add(R.id.otpContainer, t);
+            fragmentManager.beginTransaction().add(R.id.otpContainer, o.getFragment()).commit();
         }
-
-        transaction.commit(); //commit all fragments
 
         SynchronizeWithRemoteServers();
     }
