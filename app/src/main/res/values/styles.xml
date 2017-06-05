@@ -24,7 +24,7 @@
         <item name="android:capitalize">characters</item>
         <item name="android:typeface">monospace</item>
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">20pt</item>
+        <item name="android:textSize">15pt</item>
         <item name="android:textColor">@color/white</item>/>
     </style>
 
