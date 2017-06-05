@@ -24,8 +24,14 @@
         <item name="android:capitalize">characters</item>
         <item name="android:typeface">monospace</item>
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">15pt</item>
+        <item name="android:textSize">13pt</item>
         <item name="android:textColor">@color/white</item>/>
+    </style>
+
+    <style name="FragmentContainer">
+        <item name="android:background">#454545</item>
+
+
     </style>
 
     <style name="Otp" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -35,10 +41,13 @@
         <item name="android:capitalize">characters</item>
         <item name="android:typeface">monospace</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">15pt</item>
+        <item name="android:textSize">19pt</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/white</item>/>
+        <item name="android:layout_marginTop">-2pt</item>/>
     </style>
+
+
 
     <style name="countDown" parent="Theme.AppCompat.Light.DarkActionBar">
 
@@ -47,7 +56,7 @@
         <item name="android:capitalize">characters</item>
         <item name="android:typeface">monospace</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">8pt</item>
+        <item name="android:textSize">7pt</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/white</item>/>
     </style>
@@ -62,6 +71,7 @@
         <item name="android:textSize">6pt</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/white</item>/>
+        <item name="android:layout_marginTop">-6pt</item>/>
     </style>
 
     <style name="tpopup" parent="Theme.AppCompat.Light.DarkActionBar">

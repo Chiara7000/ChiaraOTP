@@ -62,14 +62,20 @@ public class PopUp extends DialogFragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.popup_layout, null);
-        popupText = (TextView) rootView.findViewById(R.id.popup);
+
+        //popupText = (TextView) rootView.findViewById(R.id.popup);
+
+
         yesButton = (Button)rootView.findViewById(R.id.yesButton);
         noButton = (Button)rootView.findViewById(R.id.noButton);
+
         yesButton.setOnClickListener(this);
         noButton.setOnClickListener(this);
+
         setCancelable(false);
 
         getDialog().setTitle("Confirmation");
+
         return rootView;
     }
 

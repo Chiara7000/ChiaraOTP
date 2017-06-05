@@ -1,17 +1,18 @@
 package ie.corktrainingcentre.chiaraotp.Helpers;
 
+import java.util.Objects;
 import java.util.Random;
 
 /**
  * Created by Ciro on 24/05/2017.
  */
 
-public class RandomString {
+public class RandomHelper {
 
     static final String validChars = "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm0123456789!_òç@#°à'ù§+*èé'£$%&/()=?^ì\\|<>,;.:-";
     static final String numbers = "0123456789";
 
-    public static String RandomString(int length)
+    public static String RandomHelper(int length)
     {
         Random r= new Random();
 
@@ -39,4 +40,9 @@ public class RandomString {
         }
         return ret;
     }
+
+    public  static <T extends Object> T RandomAmongGiven(T...elements) {
+        return elements[new Random().nextInt(elements.length)];
+    }
 }
+

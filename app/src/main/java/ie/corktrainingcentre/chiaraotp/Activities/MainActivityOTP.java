@@ -1,14 +1,17 @@
 package ie.corktrainingcentre.chiaraotp.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,8 +40,9 @@ import ie.corktrainingcentre.chiaraotp.data.DbManager;
 import ie.corktrainingcentre.chiaraotp.data.OtpModel;
 
 public class MainActivityOTP extends AppCompatActivity {
+    private FloatingActionButton goScanner;
+
     public List<OtpEntry> list = new ArrayList<OtpEntry>();
-    public FloatingActionButton goScanner;
     public Timer timer;
 
     public void init() {
@@ -46,6 +50,13 @@ public class MainActivityOTP extends AppCompatActivity {
         goScanner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (ActivityCompat.checkSelfPermission(MainActivityOTP.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                {
+                    ActivityCompat.requestPermissions(MainActivityOTP.this,new String[]{Manifest.permission.CAMERA},0x000000);
+                    return;
+                }
+
                 Intent app = new Intent(MainActivityOTP.this, ScannerActivity.class);
                 startActivityForResult(app, 1);
             }
@@ -68,14 +79,12 @@ public class MainActivityOTP extends AppCompatActivity {
             }
         });
 
-        RSAManager.GetInstance(this); //initialize
+        RSAManager.GetInstance(this); //initialize, if key doesn't exist => create (secure storage)
         DBHelper.getInstance(this);
 
         //populate otp with test records when in debug mode
         if(Constants.DEBUG)
             TestRecords.InsertTestingRecords();
-
-        List<OtpModel> records=(new DbManager()).ReadAll();
 
         refreshEntries();
 
@@ -99,10 +108,11 @@ public class MainActivityOTP extends AppCompatActivity {
         DbManager m=new DbManager();
         for (OtpModel otp : m.ReadAll())
         {
-            OtpFragment t = new OtpFragment();
             OtpEntry o = new OtpEntry();
-            o.setFragment(t);
 
+            OtpFragment t = new OtpFragment();
+
+            o.setFragment(t);
             o.setParent(this);
             o.setModel(otp);
 
@@ -110,7 +120,7 @@ public class MainActivityOTP extends AppCompatActivity {
             transaction.add(R.id.otpContainer, t);
         }
 
-        transaction.commit();
+        transaction.commit(); //commit all fragments
 
         SynchronizeWithRemoteServers();
     }
@@ -120,6 +130,7 @@ public class MainActivityOTP extends AppCompatActivity {
         for (OtpEntry otp : list) {
             int id = otp.getId();
             String url = otp.getApi();
+
             new SynchroApiHelper(id, new ITaskDoneListener() {
                 public void success(SynchroResponse response) {
                     for (OtpEntry oo : list)
@@ -158,10 +169,11 @@ public class MainActivityOTP extends AppCompatActivity {
 
                         for (OtpEntry o : list) {
                             o.getFragment().setOtp(o.getOtp());
-                            o.getFragment().setAppName(o.getAppName());
                             o.getFragment().setTime(o.GetRemainingSeconds());
-                            o.getFragment().setBarMax(o.getModel().getInterval());
                             o.getFragment().setBar(o.GetRemainingSeconds());
+
+                            o.getFragment().setAppName(o.getAppName());
+                            o.getFragment().setBarMax(o.getModel().getInterval());
                         }
                     }
                 });

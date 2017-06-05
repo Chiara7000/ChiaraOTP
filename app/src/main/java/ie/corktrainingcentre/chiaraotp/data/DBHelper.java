@@ -6,15 +6,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
-import ie.corktrainingcentre.chiaraotp.Helpers.RandomString;
+import ie.corktrainingcentre.chiaraotp.Helpers.RandomHelper;
 import ie.corktrainingcentre.chiaraotp.Encryption.RSAManager;
 
-import static android.content.Context.MODE_PRIVATE;
 import static ie.corktrainingcentre.chiaraotp.Helpers.Constants.DATABASE_NAME;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -45,9 +43,6 @@ public class DBHelper extends SQLiteOpenHelper {
         {
             DBHelper.appContext = context.getApplicationContext();
             DBHelper.dbInstance = new DBHelper();
-
-           // SQLiteDatabase db = DBHelper.dbInstance.getReadableDatabase();
-           // db.close();
 
             CreateTables();
         }
@@ -121,7 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
         List<String> pars = new ArrayList<String>();
-        String tempKey = RandomString.RandomString(30);
+        String tempKey = RandomHelper.RandomHelper(30);
         RSAManager rsa = RSAManager.GetInstance(null);
 
         pars.add(Constants.CIPHERKEY);
@@ -144,7 +139,7 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
         List<String> pars = new ArrayList<String>();
-        String tempKey = RandomString.RandomString(30);
+        String tempKey = RandomHelper.RandomHelper(30);
         RSAManager rsa = RSAManager.GetInstance(null);
 
         pars.add(Constants.SALTKEY);
@@ -183,7 +178,7 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = DBHelper.dbInstance.getWritableDatabase();
         List<String> pars = new ArrayList<String>();
-        String tempKey = RandomString.RandomString(30);
+        String tempKey = RandomHelper.RandomHelper(30);
         RSAManager rsa = RSAManager.GetInstance(null);
 
         pars.add(Constants.DATABASE_KEY_NAME);

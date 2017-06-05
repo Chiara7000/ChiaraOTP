@@ -33,9 +33,11 @@ public class RSAManager {
     private static final String TAG = MainActivityOTP.class.getName();
     private KeyStore keyStore;
     private Context c;
+
     private static RSAManager instance=null;
     private static Object locker=new Object();
-    public RSAManager(){}
+
+    private RSAManager(){}
 
     public static RSAManager GetInstance(Context c) {
         try {

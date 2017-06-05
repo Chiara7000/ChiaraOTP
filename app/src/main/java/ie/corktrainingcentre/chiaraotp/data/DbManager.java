@@ -98,7 +98,7 @@ public class DbManager {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         try
         {
-            Cursor cursor = db.rawQuery("SELECT * FROM OTP", new String[]{  });
+            Cursor cursor = db.rawQuery("SELECT * FROM OTP ORDER BY APPNAME", new String[]{  });
 
             cursor.moveToFirst();
             for(int i=0;i<cursor.getCount();i++)

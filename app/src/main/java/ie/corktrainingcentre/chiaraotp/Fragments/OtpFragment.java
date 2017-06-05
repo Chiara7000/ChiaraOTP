@@ -21,7 +21,6 @@ import ie.corktrainingcentre.chiaraotp.R;
 /**
  * Created by Chiara on 24/05/2017.
  */
-
 public class OtpFragment extends Fragment implements View.OnTouchListener{
 
     //controls id
@@ -42,7 +41,6 @@ public class OtpFragment extends Fragment implements View.OnTouchListener{
             p.show(getActivity().getFragmentManager(), "Delete OTP");
         }
     };
-
 
     public OtpFragment(){}
 
@@ -76,7 +74,6 @@ public class OtpFragment extends Fragment implements View.OnTouchListener{
         TextView t = ((TextView)this.getView().findViewById(this.idAppName));
         t.setText(appName);
     }
-
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 

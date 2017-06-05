@@ -33,11 +33,6 @@ public class AesEncryption {
         return rsa.Decrypt(DBHelper.readCipherKey());
     }
 
-    public static void Init()
-    {
-
-    }
-
     public static String Encrypt(String password, String clearText){
         String ret = null;
         try {

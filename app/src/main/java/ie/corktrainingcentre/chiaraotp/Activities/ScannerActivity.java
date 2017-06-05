@@ -56,16 +56,9 @@ public class ScannerActivity extends AppCompatActivity {
 
     private void createCameraSource() {
 
-        if (ActivityCompat.checkSelfPermission(ScannerActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(ScannerActivity.this,new String[]{Manifest.permission.CAMERA},0x000000);
-            return;
-        }
-
         if(Constants.BYPASS_CAMERA)
         {
-            String res = "{\"Secret\":\"505ac90f-4b9f-412b-9132-d9eb0f9b2521\",\"AppName\":\"TestApp\",\"Interval\":20,\"Digits\":5,\"TimeApi\":\"http://192.168.1.6:5000/Api/Time\",\"Type\":\"TOTP\"}";
-//            String res = "{\"Secret\":\"505ac90f-4b9f-412b-9132-d9eb0f9b2521\",\"AppName\":\"TestApp\",\"Interval\":30,\"Digits\":6,\"TimeApi\":\"http://192.168.1.6:81/Api/Time\",\"Type\":\"TOTP\"}";
+            String res = "{\"Secret\":\"505ac90f-4b9f-412b-9132-d9eb0f9b2521\",\"AppName\":\"ACME Ltd\",\"Interval\":20,\"Digits\":5,\"TimeApi\":\"http://192.168.1.6:5000/Api/Time\",\"Type\":\"TOTP\"}";
 
             Bundle data = new Bundle();
             data.putString("code",res);
