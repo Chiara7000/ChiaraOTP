@@ -40,8 +40,7 @@ public final class OtpModel implements BaseColumns{
         }
         catch(Exception e)
         {
-            Log.e(TAG, "unexpected JSON exception", e);
-            // Do something to recover ... or kill the app.
+            c = new OtpModel();
         }
         return c;
     }

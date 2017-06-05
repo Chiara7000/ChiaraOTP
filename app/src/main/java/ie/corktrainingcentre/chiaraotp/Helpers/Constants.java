@@ -7,6 +7,7 @@ public class Constants {
     public final static int DATABASE_VERSION = 2;
     public final static String DATABASE_NAME = "otp.db";
 
+    public final static int WAIT_TIME_DELETE = 3000;
     public final static String CIPHER_ALG = "AES/CBC/PKCS5Padding";
     public final static String APP_NAME = "ChiaraOTP";
 

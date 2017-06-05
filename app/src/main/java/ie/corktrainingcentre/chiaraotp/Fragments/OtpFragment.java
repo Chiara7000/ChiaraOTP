@@ -2,6 +2,7 @@ package ie.corktrainingcentre.chiaraotp.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import ie.corktrainingcentre.chiaraotp.Helpers.Constants;
 import ie.corktrainingcentre.chiaraotp.Logic.OtpEntry;
 import ie.corktrainingcentre.chiaraotp.R;
 
@@ -29,6 +31,18 @@ public class OtpFragment extends Fragment implements View.OnTouchListener{
     private int idBar = 0;
     private View localCopy=null;
     private OtpEntry entry=null;
+
+    private Handler handler = new Handler();
+    private Runnable timeRunnable = new Runnable(){
+        @Override
+        public void run()
+        {
+            PopUp p = PopUp.getInstance();
+            p.setEntry(entry);
+            p.show(getActivity().getFragmentManager(), "Delete OTP");
+        }
+    };
+
 
     public OtpFragment(){}
 
@@ -72,10 +86,6 @@ public class OtpFragment extends Fragment implements View.OnTouchListener{
         this.idBar = View.generateViewId();
         pb.setId(this.idBar);
 
-        //Animation an = new RotateAnimation(0.0f, 90.0f, 250f, 273f);
-        //an.setFillAfter(true);
-        //pb.startAnimation(an);
-
         TextView otpTextView = (TextView)temp.findViewById(R.id.otp);
         this.idOTP = View.generateViewId();
         otpTextView.setId(this.idOTP);
@@ -100,28 +110,23 @@ public class OtpFragment extends Fragment implements View.OnTouchListener{
         appNameTextView.setOnTouchListener(this);
         pb.setOnTouchListener(this);
 
-       /* temp.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-
-                PopUp dialogFragment = new PopUp();
-                dialogFragment.show(getActivity().getFragmentManager(),"Alert Message");
-
-                return true;
-            }
-        });*/
         localCopy=temp;
         return temp;
     }
 
      @Override
      public boolean onTouch(View v,MotionEvent event) {
-        //PopUp dialogFragment = new PopUp();
-        //dialogFragment.show(getActivity().getFragmentManager(),"Alert Message");
-         if(event.getPressure()>0.5f) {
-             PopUp p = PopUp.getInstance();
-             p.setEntry(this.entry);
-             p.show(getActivity().getFragmentManager(), "Delete OTP");
+         //handler
+         if(event.getAction() == MotionEvent.ACTION_DOWN )
+         {
+             handler.postDelayed(timeRunnable, Constants.WAIT_TIME_DELETE);
+         }
+         else if(event.getAction() == MotionEvent.ACTION_UP )
+         {
+             handler.removeCallbacks(timeRunnable);
          }
          return true;
      }
+
+
 }
